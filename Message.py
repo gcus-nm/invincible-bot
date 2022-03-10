@@ -19,6 +19,7 @@ client = discord.Client()
 channel = client.get_channel(channel_id_server)
 
 if args.arg1 == 1:
+    print("hello")
     channel.send("test")
 
 client.run(os.environ.get('DISCORD_TOKEN'))
