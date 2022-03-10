@@ -5,12 +5,20 @@ Created on Thu Mar 10 11:48:56 2022
 @author: gcus_nm12
 """
 
-import os
-import discord.ext
-from discord.ext import commands
+import discord
 
-client = commands.Bot(command_prefix='!')
+client = discord.cliant()
 
-# ここにコードを書く
+#鯖チャンネルのID
+CHANNEL_ID_SERVER = 852963766630613032
 
-client.run(os.environ.get('DISCORD_TOKEN'))
+async def ServerOn():
+    channel = client.get_channel(CHANNEL_ID_SERVER)
+    await channel.send('サーバーが起動しました')
+    
+async def ServerOff():
+    channel = client.get_channel(CHANNEL_ID_SERVER)
+    await channel.send('サーバーが停止しました')
+    
+
+client.run(('DISCORD_TOKEN'))
