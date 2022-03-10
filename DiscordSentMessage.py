@@ -13,4 +13,4 @@ parser.add_argument('arg1')
 args = parser.parse_args()
 
 discord = Discord(url="https://discord.com/api/webhooks/951316286237995048/im70FXVqHWLwwxGp7pOC3zG9PxFX6-VJZdNahOsew2aKronNkIH5YVrHe5Go5Gt-ejXM")
-discord.post(context=args.arg1)
+discord.post(content=args.arg1)
