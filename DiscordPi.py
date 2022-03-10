@@ -7,14 +7,8 @@ Created on Thu Mar 10 12:28:29 2022
 
 import os
 import discord.ext
-import random
 from discord.ext import commands
-import argparse
 import subprocess
-
-parser = argparse.ArgumentParser()
-parser.add_argument('arg1')
-args = parser.parse_args()
 
 channel_id_server = 852963766630613032
 
@@ -33,7 +27,7 @@ async def start(ctx):
     
     stat = discord.Game(name="Minecraft Server")
     await client.change_presence(status=discord.Status.online, activity=stat)
-    await ctx.message.channel.send("Start コマンド")
+    await ctx.message.channel.send("Start")
     #subprocess.call("cd")
     #subprocess.call(". minecraft/build.sh")
 
