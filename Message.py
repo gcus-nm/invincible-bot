@@ -6,7 +6,9 @@ Created on Thu Mar 10 12:28:29 2022
 """
 
 import os
-import discord
+import discord.ext
+import random
+from discord.ext import commands
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -15,11 +17,16 @@ args = parser.parse_args()
 
 channel_id_server = 852963766630613032
 
-client = discord.Client()
+client = commands.Bot(command_prefix='!')
 channel = client.get_channel(channel_id_server)
 
-if args.arg1 == 1:
-    print("hello")
-    channel.send("test")
+@client.command()
+async def dice(ctx, arg = 6):
+  dice_limit = int(arg)
+  await ctx.send(random.randrange(dice_limit) + 1)
+
+@client.event
+async def on_ready():
+  await channel.send("サーバーが起動しました！")
 
 client.run(os.environ.get('DISCORD_TOKEN'))
