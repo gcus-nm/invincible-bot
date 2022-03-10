@@ -15,10 +15,10 @@ args = parser.parse_args()
 
 channel_id_server = 852963766630613032
 
-cliant = discord.Cliant()
-channel = cliant.get_channel(channel_id_server)
+client = discord.Client()
+channel = client.get_channel(channel_id_server)
 
 if args.arg1 == 1:
     channel.send("test")
 
-cliant.run(os.environ.get('DISCORD_TOKEN'))
+client.run(os.environ.get('DISCORD_TOKEN'))
