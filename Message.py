@@ -10,6 +10,7 @@ import discord.ext
 import random
 from discord.ext import commands
 import argparse
+import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument('arg1')
@@ -20,13 +21,20 @@ channel_id_server = 852963766630613032
 client = commands.Bot(command_prefix='!')
 channel = client.get_channel(channel_id_server)
 
-@client.command()
-async def dice(ctx, arg = 6):
-  dice_limit = int(arg)
-  await ctx.send(random.randrange(dice_limit) + 1)
-
 @client.event
 async def on_ready():
-  await channel.send("サーバーが起動しました！")
+    await client.change_presence(status=discord.Status.idle)
+
+@client.command()
+async def start(ctx):
+    # 送信者がbotである場合は弾く
+    if ctx.message.author.bot:
+        return 
+    
+    stat = discord.Game(name="Minecraft Server")
+    await client.change_presence(status=discord.Status.online, activity=stat)
+    await ctx.message.channel.send("Start コマンド")
+    #subprocess.call("cd")
+    #subprocess.call(". minecraft/build.sh")
 
 client.run(os.environ.get('DISCORD_TOKEN'))
