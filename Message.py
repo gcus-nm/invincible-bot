@@ -12,5 +12,5 @@ parser = argparse.ArgumentParser()
 parser.add_argument('arg1')
 args = parser.parse_args()
 
-discord = Discord(url="https://discord.com/api/webhooks/951316286237995048/im70FXVqHWLwwxGp7pOC3zG9PxFX6-VJZdNahOsew2aKronNkIH5YVrHe5Go5Gt-ejXM")
+discord = Discord(url="https://discord.com/api/webhooks/951326563423625237/nIEa1VZuzm5RIRZEXA-6Lw8jzRngbqriXd31X0WfC9lbPiuzGXAjlLZzRUyydaYmjAm8")
 discord.post(content=args.arg1)
