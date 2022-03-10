@@ -5,12 +5,20 @@ Created on Thu Mar 10 12:28:29 2022
 @author: gcus_nm12
 """
 
-from discordwebhook import Discord
-import argparse
+import os
+import discord
+import argphase
 
-parser = argparse.ArgumentParser()
+parser = argphase.ArgumentParser()
 parser.add_argument('arg1')
 args = parser.parse_args()
 
-discord = Discord(url="https://discord.com/api/webhooks/951326563423625237/nIEa1VZuzm5RIRZEXA-6Lw8jzRngbqriXd31X0WfC9lbPiuzGXAjlLZzRUyydaYmjAm8")
-discord.post(content=args.arg1)
+channel_id_server = 852963766630613032
+
+cliant = discord.Cliant()
+channel = cliant.get_channel(channel_id_server)
+
+if args.arg1 == 1:
+    channel.send("test")
+
+cliant.run(os.environ.get('DISCORD_TOKEN'))
