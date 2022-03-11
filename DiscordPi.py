@@ -10,15 +10,17 @@ import discord.ext
 from discord.ext import commands
 import subprocess
 
-channel_id_server = 852963766630613032
+channel_id_server = 951654109788905502
 
 client = commands.Bot(command_prefix='!')
 channel = client.get_channel(channel_id_server)
 
 @client.event
 async def on_ready():
-    await client.change_presence(status=discord.Status.idle)
+    await client.change_presence(status=discord.Status.Online)
+    await channel.send("HELLO")
 
+"""
 @client.command()
 async def start(ctx):
     # 送信者がbotである場合は弾く
@@ -30,5 +32,6 @@ async def start(ctx):
     await ctx.message.channel.send("Start")
     #subprocess.call("cd")
     #subprocess.call(". minecraft/build.sh")
+"""
 
 client.run(os.environ.get('DISCORD_TOKEN'))
