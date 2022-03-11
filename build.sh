@@ -15,4 +15,4 @@ echo -------------------------------
 sudo cpufreq-set -g performance
 
 # Build
-bash buildChild.sh $ram $version
+lxterminal -e bash buildChild.sh $ram $version
