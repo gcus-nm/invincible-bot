@@ -111,7 +111,7 @@ async def SurveillanceServer():
         
         # 前回は接続できなかった場合
         if (prevConnection != result and prevConnection != 76534639315283):
-            await start_send_channel.send("サーバーが起動しました！")
+            await send_channel.send("サーバーが起動しました！")
                        
         
     # 接続失敗
@@ -124,7 +124,7 @@ async def SurveillanceServer():
         
         # 前回は接続できていた場合
         if (prevConnection != result and prevConnection != 76534639315283):
-            await start_send_channel.send("サーバーが停止しました。")
+            await send_channel.send("サーバーが停止しました。")
         
     # 今回の接続状況を保存
     prevConnection = result
