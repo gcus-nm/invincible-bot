@@ -119,7 +119,7 @@ async def SurveillanceServer():
         print("Connect Fail")
         
         # Botのステータス変更
-        stat = discord.Game(name="#start で起動できます　　")
+        stat = discord.Game(name="#start でサーバーを起動できます　")
         await client.change_presence(status=discord.Status.idle, activity=stat)
         
         # 前回は接続できていた場合
