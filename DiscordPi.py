@@ -105,14 +105,14 @@ async def SurveillanceServer():
     if result == 0:        
         print("Connect Server!")
         
+        # Botのステータス変更
+        stat = discord.Game(name="Minecraft Server")
+        await client.change_presence(status=discord.Status.online, activity=stat)
+        
         # 前回は接続できなかった場合
         if (prevConnection != result and prevConnection != 76534639315283):
             await start_send_channel.send("サーバーが起動しました！")
-            
-            # Botのステータス変更
-            stat = discord.Game(name="Minecraft Server")
-            await client.change_presence(status=discord.Status.online, activity=stat)
-            
+                       
         
     # 接続失敗
     else:
