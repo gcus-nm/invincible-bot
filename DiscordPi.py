@@ -14,11 +14,11 @@ from discord.ext import tasks
 import subprocess
 import sys
 
-# デフォルトチャンネルID
+# デフォルトチャンネルID　（今は開発用サーバーのチャンネル）
 default_channel = 951654109788905502
 
-# startコマンドを送ったチャンネルID
-start_send_channel = 0
+# 送信先チャンネルID
+send_channel = 0
 
 client = commands.Bot(command_prefix='#')
 prevConnection = 76534639315283
@@ -31,10 +31,10 @@ async def on_ready():
     SurveillanceServer.start()
     
     # 送信チャンネルのデフォルト設定
-    global start_send_channel
+    global send_channel
     global default_channel
     
-    start_send_channel = default_channel
+    send_channel = client.get_channel(default_channel)
 
 # startコマンド
 @client.command()
@@ -45,10 +45,10 @@ async def start(ctx):
         return 
     
     # チャンネルIDを保存
-    global start_send_channel
-    start_send_channel = ctx.message.channel
+    global send_channel
+    send_channel = ctx.message.channel
     # チャンネルにメッセージ送信
-    await start_send_channel.send("サーバーの起動を開始します...")
+    await send_channel.send("サーバーの起動を開始します...")
     
     # 起動コマンドをシェルで起動
     subprocess.run(". /home/pi/minecraft/Git/build.sh", shell=True)
@@ -61,8 +61,11 @@ async def reboot(ctx):
     if ctx.message.author.bot:
         return 
     
+    # チャンネルIDを保存
+    global send_channel
+    send_channel = ctx.message.channel
     # チャンネルにメッセージ送信
-    await start_send_channel.send("サーバーPCの再起動を行います。")
+    await send_channel.send("サーバーPCの再起動を行います。")
     
     # リブート
     subprocess.run("sudo reboot", shell=True)
