@@ -29,7 +29,7 @@ async def start(ctx):
     stat = discord.Game(name="Minecraft Server")
     await client.change_presence(status=discord.Status.online, activity=stat)
     await ctx.message.channel.send("サーバーを起動します...")
-    subprocess.call(". /home/pi/minecraft/build.sh")
+    subprocess.run(". /home/pi/minecraft/build.sh", shell=True)
     
 input=sys.stdin.readline()
 print(input)
