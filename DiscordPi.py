@@ -33,6 +33,7 @@ async def on_ready():
     global default_channel
     
     send_channel = client.get_channel(default_channel)
+    print("Bot Start.")
     
 # commandコマンド
 @client.command()
