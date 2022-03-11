@@ -11,14 +11,14 @@ from discord.ext import commands
 import subprocess
 import sys
 
-channel_id = 951654109788905502
+#channel_id = 951654109788905502
 
 client = commands.Bot(command_prefix='#')
 
 @client.event
 async def on_ready():
     await client.change_presence(status=discord.Status.online)
-    await client.get_channel(channel_id).send("HELLO")
+    #await client.get_channel(channel_id).send("HELLO")
 
 @client.command()
 async def start(ctx):
@@ -31,7 +31,4 @@ async def start(ctx):
     await ctx.message.channel.send("サーバーを起動します...")
     subprocess.run(". /home/pi/minecraft/build.sh", shell=True)
     
-input=sys.stdin.readline()
-print(input)
-
 client.run(os.environ.get('DISCORD_TOKEN'))
