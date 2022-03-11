@@ -7,4 +7,4 @@ ram=6
 sudo cpufreq-set -g performance
 
 # Build
-lxterminal -e bash buildChild.sh $ram $version
+lxterminal -e bash /home/pi/minecraft/Git/buildChild.sh $ram $version
