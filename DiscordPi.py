@@ -9,6 +9,7 @@ import os
 import discord.ext
 from discord.ext import commands
 import subprocess
+import sys
 
 channel_id = 951654109788905502
 
@@ -28,8 +29,9 @@ async def start(ctx):
     stat = discord.Game(name="Minecraft Server")
     await client.change_presence(status=discord.Status.online, activity=stat)
     await ctx.message.channel.send("サーバーを起動します...")
-    #subprocess.call("cd")
-    #subprocess.call(". minecraft/build.sh")
+    subprocess.call(". /home/pi/minecraft/build.sh")
+    
+input=sys.stdin.readline()
+print(input)
 
 client.run(os.environ.get('DISCORD_TOKEN'))
-print("Ready")
