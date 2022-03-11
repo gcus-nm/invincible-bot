@@ -12,7 +12,7 @@ import subprocess
 
 channel_id = 951654109788905502
 
-client = commands.Bot(command_prefix='!')
+client = commands.Bot(command_prefix='#')
 
 @client.event
 async def on_ready():
@@ -27,7 +27,7 @@ async def start(ctx):
     
     stat = discord.Game(name="Minecraft Server")
     await client.change_presence(status=discord.Status.online, activity=stat)
-    await ctx.message.channel.send("Start")
+    await ctx.message.channel.send("サーバーを起動します...")
     #subprocess.call("cd")
     #subprocess.call(". minecraft/build.sh")
 
