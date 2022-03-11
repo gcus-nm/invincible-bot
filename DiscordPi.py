@@ -39,7 +39,7 @@ async def SurveillanceServer():
     serverAdr = 'gcusnm-raspberrypi.mydns.jp'
     port = 25565
     
-    mySocket = socket.socket(socket.AF_INET, socket.sock.SOCK_STREAM)
+    mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     mySocket.settimeout(5)
     result = mySocket.connect_ex((serverAdr, int(port)))
     
