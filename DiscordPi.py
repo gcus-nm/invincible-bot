@@ -35,6 +35,20 @@ async def on_ready():
     global default_channel
     
     send_channel = client.get_channel(default_channel)
+    
+# commandコマンド
+@client.command()
+async def command(ctx):
+    
+    # 送信者がbotである場合は弾く
+    if ctx.message.author.bot:
+        return 
+    
+    # チャンネルIDを保存
+    global send_channel
+    send_channel = ctx.message.channel
+    # チャンネルにメッセージ送信
+    await send_channel.send("現在有効なコマンド\n#start サーバーの起動\n#reboot PCの再起動")
 
 # startコマンド
 @client.command()
