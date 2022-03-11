@@ -48,7 +48,7 @@ async def command(ctx):
     global send_channel
     send_channel = ctx.message.channel
     # チャンネルにメッセージ送信
-    await send_channel.send("現在有効なコマンド\n#start サーバーの起動\n#reboot PCの再起動")
+    await send_channel.send("現在有効なコマンド\n#start\tサーバーの起動\n#reboot\tPCの再起動")
 
 # startコマンド
 @client.command()
