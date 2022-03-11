@@ -17,7 +17,7 @@ channel = client.get_channel(channel_id_server)
 
 @client.event
 async def on_ready():
-    await client.change_presence(status=discord.Status.Online)
+    await client.change_presence(status=discord.Status.online)
     await channel.send("HELLO")
 
 """
