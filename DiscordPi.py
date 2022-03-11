@@ -36,7 +36,7 @@ async def start(ctx):
     
 @tasks.loop(seconds=10)
 async def SurveillanceServer():
-    serverAdr = 'gcusnm-raspberrypi.mydns.jp'
+    serverAdr = 'raspberrypi.local'
     port = 25565
     
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
