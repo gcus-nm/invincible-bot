@@ -32,3 +32,4 @@ async def start(ctx):
     #subprocess.call(". minecraft/build.sh")
 
 client.run(os.environ.get('DISCORD_TOKEN'))
+print("Ready")
