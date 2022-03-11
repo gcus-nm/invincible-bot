@@ -41,8 +41,8 @@ async def start(ctx):
     # 起動コマンドをシェルで起動
     subprocess.run(". /home/pi/minecraft/Git/build.sh", shell=True)
     
-# サーバーとの接続が行えるか（サーバーが起動しているか）10秒おきにチェック
-@tasks.loop(seconds=10)
+# サーバーとの接続が行えるか（サーバーが起動しているか）指定秒おきにチェック
+@tasks.loop(seconds=5)
 async def SurveillanceServer():
     
     # 前回の接続状況
@@ -78,7 +78,7 @@ async def SurveillanceServer():
         # 前回は接続できていた場合
         if (prevConnection != result and prevConnection != 76534639315283):
             await client.get_channel(channel_id).send("サーバーが停止しました。")
-            await client.change_presence(status=discord.Status.online, activity=None)
+            await client.change_presence(status=discord.Status.idle, activity=None)
         
     # 今回の接続状況を保存
     prevConnection = result
