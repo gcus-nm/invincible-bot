@@ -7,12 +7,10 @@ Created on Thu Mar 10 12:28:29 2022
 
 import os
 import socket
-import psutil
 import discord.ext
 from discord.ext import commands
 from discord.ext import tasks
 import subprocess
-import sys
 
 # デフォルトチャンネルID　（今は開発用サーバーのチャンネル）
 default_channel = 951654109788905502
@@ -65,7 +63,7 @@ async def start(ctx):
     await send_channel.send("サーバーの起動を開始します...")
     
     # 起動コマンドをシェルで起動
-    subprocess.run(". /home/pi/minecraft/Git/build.sh", shell=True)
+    subprocess.run("bash /home/pi/minecraft/Git/build.sh", shell=True)
     
 # rebootコマンド
 @client.command()
@@ -102,28 +100,26 @@ async def SurveillanceServer():
     result = mySocket.connect_ex((serverAdr, int(port)))
     
     # 接続成功
-    if result == 0:        
-        print("Connect Server!")
-        
+    if result == 0:                
         # Botのステータス変更
         stat = discord.Game(name="Minecraft Server")
         await client.change_presence(status=discord.Status.online, activity=stat)
         
         # 前回は接続できなかった場合
         if (prevConnection != result and prevConnection != 76534639315283):
+            print("Server Running.")
             await send_channel.send("サーバーが起動しました！")
                        
         
     # 接続失敗
-    else:
-        print("Connect Fail")
-        
+    else:        
         # Botのステータス変更
         stat = discord.Game(name="#start でサーバーを起動できます　")
         await client.change_presence(status=discord.Status.idle, activity=stat)
         
         # 前回は接続できていた場合
         if (prevConnection != result and prevConnection != 76534639315283):
+            print("Server Stopped.")
             await send_channel.send("サーバーが停止しました。")
         
     # 今回の接続状況を保存
