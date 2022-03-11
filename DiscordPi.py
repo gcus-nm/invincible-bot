@@ -14,8 +14,8 @@ from discord.ext import tasks
 import subprocess
 import sys
 
-# 特定のチャンネルID
-channel_id = 951654109788905502
+# デフォルトチャンネルID
+default_channel = 951654109788905502
 
 # startコマンドを送ったチャンネルID
 start_send_channel = 0
@@ -29,6 +29,12 @@ async def on_ready():
     
     #　サーバー接続チェック開始
     SurveillanceServer.start()
+    
+    # 送信チャンネルのデフォルト設定
+    global start_send_channel
+    global default_channel
+    
+    start_send_channel = default_channel
 
 # startコマンド
 @client.command()
