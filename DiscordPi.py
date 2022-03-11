@@ -53,6 +53,20 @@ async def start(ctx):
     # 起動コマンドをシェルで起動
     subprocess.run(". /home/pi/minecraft/Git/build.sh", shell=True)
     
+# rebootコマンド
+@client.command()
+async def reboot(ctx):
+    
+    # 送信者がbotである場合は弾く
+    if ctx.message.author.bot:
+        return 
+    
+    # チャンネルにメッセージ送信
+    await start_send_channel.send("サーバーPCの再起動を行います。")
+    
+    # リブート
+    subprocess.run("sudo reboot", shell=True)
+    
 # サーバーとの接続が行えるか（サーバーが起動しているか）指定秒おきにチェック
 @tasks.loop(seconds=5)
 async def SurveillanceServer():
