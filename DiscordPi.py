@@ -18,7 +18,7 @@ import sys
 channel_id = 951654109788905502
 
 client = commands.Bot(command_prefix='#')
-prevConnection = -1
+prevConnection = 76534639315283
 
 # Python（Bot）起動時
 @client.event
@@ -63,8 +63,8 @@ async def SurveillanceServer():
         print("Connect Server!")
         
         # 前回の接続ができなかった場合
-        if (prevConnection != result):
-            client.get_channel(channel_id).send("サーバーが起動しました！")
+        if (prevConnection != result and prevConnection != 76534639315283):
+            await client.get_channel(channel_id).send("サーバーが起動しました！")
             
             # Botのステータス変更
             stat = discord.Game(name="Minecraft Server")
@@ -76,8 +76,8 @@ async def SurveillanceServer():
         print("Connect Fail")
         
         # 前回は接続できていた場合
-        if (prevConnection != result):
-            client.get_channel(channel_id).send("サーバーが停止しました。")
+        if (prevConnection != result and prevConnection != 76534639315283):
+            await client.get_channel(channel_id).send("サーバーが停止しました。")
             await client.change_presence(status=discord.Status.online, activity=None)
         
     # 今回の接続状況を保存
