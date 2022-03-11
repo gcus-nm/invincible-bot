@@ -6,6 +6,7 @@ Created on Thu Mar 10 12:28:29 2022
 """
 
 import os
+import socket
 import psutil
 import discord.ext
 from discord.ext import commands
@@ -35,14 +36,19 @@ async def start(ctx):
     
 @tasks.loop(seconds=10)
 async def SurveillanceServer():
-    for proc in psutil.process_iter():
-        print("----------------------")
-        print("プロセスID:" + str(proc.pid))
-    try:
-        print("実行モジュール：" + proc.exe())
-        print("コマンドライン:" + str(proc.cmdline()))
-        print("カレントディレクトリ:" + proc.cwd())
-    except psutil.AccessDenied:
-        print("このプロセスへのアクセス権がありません。")
+    serverAdr = 'gcusnm-raspberrypi.mydns.jp'
+    port = 25565
+    
+    mySocket = socket.socket(socket.AF_INET, socket.sock.SOCK_STREAM)
+    mySocket.settimeout(5)
+    result = mySocket.connect_ex((serverAdr, int(port)))
+    
+    if result == 0:
+        print("Connect!")
+    else:
+        print("Fail")
+        
+    mySocket.close()
+    
     
 client.run(os.environ.get('DISCORD_TOKEN'))
