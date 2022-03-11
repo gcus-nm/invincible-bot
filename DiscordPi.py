@@ -74,7 +74,7 @@ async def SurveillanceServer():
     if result == 0:        
         print("Connect Server!")
         
-        # 前回の接続ができなかった場合
+        # 前回は接続できなかった場合
         if (prevConnection != result and prevConnection != 76534639315283):
             await start_send_channel.send("サーバーが起動しました！")
             
@@ -86,7 +86,10 @@ async def SurveillanceServer():
     # 接続失敗
     else:
         print("Connect Fail")
-        await client.change_presence(status=discord.Status.idle, activity=None)
+        
+        # Botのステータス変更
+        stat = discord.Game(name="#start で起動できます")
+        await client.change_presence(status=discord.Status.idle, activity=stat)
         
         # 前回は接続できていた場合
         if (prevConnection != result and prevConnection != 76534639315283):
