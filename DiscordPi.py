@@ -17,6 +17,9 @@ import sys
 # 特定のチャンネルID
 channel_id = 951654109788905502
 
+# startコマンドを送ったチャンネルID
+start_send_channel = 0
+
 client = commands.Bot(command_prefix='#')
 prevConnection = 76534639315283
 
@@ -35,8 +38,11 @@ async def start(ctx):
     if ctx.message.author.bot:
         return 
     
+    # チャンネルIDを保存
+    global start_send_channel
+    start_send_channel = ctx.message.channel
     # チャンネルにメッセージ送信
-    await ctx.message.channel.send("サーバーの起動を開始します...")
+    await start_send_channel.send("サーバーの起動を開始します...")
     
     # 起動コマンドをシェルで起動
     subprocess.run(". /home/pi/minecraft/Git/build.sh", shell=True)
@@ -64,7 +70,7 @@ async def SurveillanceServer():
         
         # 前回の接続ができなかった場合
         if (prevConnection != result and prevConnection != 76534639315283):
-            await client.get_channel(channel_id).send("サーバーが起動しました！")
+            await start_send_channel.send("サーバーが起動しました！")
             
             # Botのステータス変更
             stat = discord.Game(name="Minecraft Server")
@@ -74,11 +80,11 @@ async def SurveillanceServer():
     # 接続失敗
     else:
         print("Connect Fail")
+        await client.change_presence(status=discord.Status.idle, activity=None)
         
         # 前回は接続できていた場合
         if (prevConnection != result and prevConnection != 76534639315283):
-            await client.get_channel(channel_id).send("サーバーが停止しました。")
-            await client.change_presence(status=discord.Status.idle, activity=None)
+            await start_send_channel.send("サーバーが停止しました。")
         
     # 今回の接続状況を保存
     prevConnection = result
