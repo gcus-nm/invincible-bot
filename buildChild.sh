@@ -14,10 +14,11 @@ echo -------------------------------
 
 # Java version
 javaPath="java"
+
 if [ $javaVer -eq 16 ] ; then
-  $javaPath="/usr/java/openjdk/jdk-16/bin/java"
+  javaPath="/usr/java/openjdk/jdk-16/bin/java"
 elif [ $javaVer -eq 8 ] ; then
-  $javaPath="/usr/java/openjdk/jdk1.8.0_311/bin/java"
+  javaPath="/usr/java/openjdk/jdk1.8.0_311/bin/java"
 fi
 
 
