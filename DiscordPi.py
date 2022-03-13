@@ -65,7 +65,7 @@ async def start(ctx, version = "1.18.1P", ram = 6):
     
     # 起動コマンドをシェルで起動
     command = "bash /home/pi/minecraft/Git/build.sh";
-    command = command + " " + version + " " + ram
+    command = command + " " + str(version) + " " + str(ram)
     
     subprocess.run(command, shell=True)
     
