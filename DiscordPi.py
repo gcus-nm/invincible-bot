@@ -62,7 +62,7 @@ async def start(ctx, version = "1.18.1P", ram = 6):
     send_channel = ctx.message.channel
     
     # javaバージョン
-    javaVer = "16"
+    javaVer = "17"
     
     # チャンネルにメッセージ送信
     await send_channel.send("サーバーの起動を開始します...")
