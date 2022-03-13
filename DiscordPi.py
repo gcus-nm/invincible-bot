@@ -51,7 +51,7 @@ async def command(ctx):
 
 # startコマンド
 @client.command()
-async def start(ctx):
+async def start(ctx, version = "1.18.1P", ram = 6):
     
     # 送信者がbotである場合は弾く
     if ctx.message.author.bot:
@@ -64,7 +64,10 @@ async def start(ctx):
     await send_channel.send("サーバーの起動を開始します...")
     
     # 起動コマンドをシェルで起動
-    subprocess.run("bash /home/pi/minecraft/Git/build.sh", shell=True)
+    command = "bash /home/pi/minecraft/Git/build.sh";
+    command = command + " " + version + " " + ram
+    
+    subprocess.run(command, shell=True)
     
 # rebootコマンド
 @client.command()
