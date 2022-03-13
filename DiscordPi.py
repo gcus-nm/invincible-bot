@@ -60,12 +60,20 @@ async def start(ctx, version = "1.18.1P", ram = 6):
     # チャンネルIDを保存
     global send_channel
     send_channel = ctx.message.channel
+    
+    # javaバージョン
+    javaVer = "16"
+    
     # チャンネルにメッセージ送信
     await send_channel.send("サーバーの起動を開始します...")
     
+    if (version == "takumi" or version == "Takumi" or version == "TAKUMI"):
+        version = "1.12.2Mohist"
+        javaVer = "8"
+    
     # 起動コマンドをシェルで起動
     command = "bash /home/pi/minecraft/Git/build.sh";
-    command = command + " " + str(version) + " " + str(ram)
+    command = command + " " + str(version) + " " + str(ram) + " " + str(javaVer)
     
     subprocess.run(command, shell=True)
     
