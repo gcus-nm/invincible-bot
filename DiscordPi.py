@@ -12,10 +12,10 @@ from discord.ext import commands
 from discord.ext import tasks
 import subprocess
 
-# デフォルトチャンネルID　（今は開発用サーバーのチャンネル）
+# デフォルトチャンネル　（今は開発用サーバーのチャンネル）
 default_channel = 951654109788905502
 
-# 送信先チャンネルID
+# 送信先チャンネル
 send_channel = 0
 
 client = commands.Bot(command_prefix='#')
@@ -43,7 +43,7 @@ async def command(ctx):
     if ctx.message.author.bot:
         return 
     
-    # チャンネルIDを保存
+    # 送られてきたチャンネルを保存
     global send_channel
     send_channel = ctx.message.channel
     # チャンネルにメッセージ送信
@@ -51,28 +51,42 @@ async def command(ctx):
 
 # startコマンド
 @client.command()
-async def start(ctx, version = "1.18.1P", ram = 6):
+async def start(ctx, version = "1.18.1P", ram = 12):
     
     # 送信者がbotである場合は弾く
     if ctx.message.author.bot:
         return 
     
-    # チャンネルIDを保存
+    # 送られてきたチャンネルを保存
     global send_channel
     send_channel = ctx.message.channel
     
     # javaバージョン
     javaVer = "17"
     
-    # チャンネルにメッセージ送信
-    await send_channel.send("サーバーの起動を開始します...")
+    # サーバーバージョンメッセージ
+    versionMessage = "1.18.1"
     
-    if (version == "takumi" or version == "Takumi" or version == "TAKUMI"):
+    # 起動鯖のバージョン指定
+    if  (version == "1.18.1" or version == "1.18.1P"):
+        
+        version = "1.18.1P"
+        versionMessage = "1.18.1"
+        javaVer = "17"
+        
+    elif (version == "1.12.2Mohist" or version == "takumi" or
+        version == "Takumi" or version == "TAKUMI"):
+        
         version = "1.12.2Mohist"
+        versionMessage = "1.12.2 匠サーバー"
         javaVer = "8"
     
+    # チャンネルにメッセージ送信
+    sendMessage = "サーバー [ " + versionMessage + " ] の起動を開始します..."
+    await send_channel.send(sendMessage)
+    
     # 起動コマンドをシェルで起動
-    command = "bash /home/pi/minecraft/Git/build.sh";
+    command = "bash /Users/user/minecraft/Git/build.sh";
     command = command + " " + str(version) + " " + str(ram) + " " + str(javaVer)
     
     subprocess.run(command, shell=True)
