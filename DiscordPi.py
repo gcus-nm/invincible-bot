@@ -86,8 +86,8 @@ async def start(ctx, version = "1.18.1P", ram = 12):
     await send_channel.send(sendMessage)
     
     # 起動コマンドをシェルで起動
-    command = "open -a /Applications/Utilities/Terminal.app/Contents/MacOS/Terminal build.sh";
-    command = command + " " + str(version) + " " + str(ram) + " " + str(javaVer)
+    command = "open -a /Applications/Utilities/Terminal.app/Contents/MacOS/Terminal \"build.sh";
+    command = command + " " + str(version) + " " + str(ram) + " " + str(javaVer) + "\""
     
     subprocess.run(command, shell=True)
     
