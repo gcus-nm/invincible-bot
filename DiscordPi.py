@@ -116,9 +116,9 @@ async def SurveillanceServer():
     global prevConnection
     
     # サーバーアドレス
-    serverAdr = 'raspberrypi.local'    
+    serverAdr = 'gcus-MacPro.local'    
     # ポート
-    port = 25565
+    port = 25024
     
     # 接続テスト
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
