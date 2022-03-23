@@ -5,4 +5,4 @@ ram=$2
 javaVer=$3
 
 # Build
-bash /User/user/minecraft/Git/buildChild.sh $ram $version $javaVer
+bash /Users/user/minecraft/Git/buildChild.sh $ram $version $javaVer
