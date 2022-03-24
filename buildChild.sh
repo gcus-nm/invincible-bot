@@ -26,12 +26,36 @@ fi
 cd /Users/user/minecraft/servers/${version}
 sudo nice -n -10 $javaPath -Xms${ram}G -Xmx${ram}G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -XX:G1NewSizePercent=40 -XX:G1MaxNewSizePercent=50 -XX:G1HeapRegionSize=16M -XX:G1ReservePercent=15 -XX:InitiatingHeapOccupancyPercent=20 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -jar server.jar nogui
 
+########################################################
+# Backup To DropBox
+#echo
+#echo "Starting Backup To DropBox."
+#echo
+#
+#rclone sync -P /Users/user/minecraft/servers/$version DropBox:Minecraft/$version 
+#
 # Backup To Google Drive
-echo
-echo "Starting Backup To Google Drive. "
-echo
-cd 
-rclone sync -P /Users/user/minecraft/servers/$version GoogleDrive:RaspberryPi/Minecraft/$version
+#echo
+#echo "Starting Backup To Google Drive. "
+#echo
+#
+#rclone sync -P /Users/user/minecraft/servers/$version GoogleDrive:RaspberryPi/Minecraft/#$version
+#
+########################################################
+
+# Backup To NAS
+# Create Backup Folder
+mkdir -p /Users/user/minecraft/BackUps/$version
+cd /Users/user/minecraft/BackUps/$version
+
+# Archive Minecraft Directory
+FolderDate=`date '+%Y%m%d%H%M'`
+tar -zcvf minecraft_${version}_${FolderDate}.tar.gz /Users/user/minecraft/servers/$version
+
+# Copy To NAS
+mkdir -p /Volumes/gcus_nm/minecraft_BackUp/$version
+
+rsync -av --progress minecraft_${version}_${FolderDate}.tar.gz /Volumes/gcus_nm/minecraft_Backup/${version}/
 
 echo
 read -p "Exit to press Enter."
