@@ -78,7 +78,7 @@ async def start(ctx, version = "1.18.1P", ram = 12):
         
         version = "1.18.1P"
         versionMessage = "1.18.1 バニラサーバー"
-        runServerText = "1.18.1 バニラサーバー"
+        runServerText = "1.18.1 バニラサーバー "
         javaVer = "17"
         
     elif (version == "1.12.2Mohist" or version == "takumi" or
@@ -86,7 +86,7 @@ async def start(ctx, version = "1.18.1P", ram = 12):
         
         version = "1.12.2Mohist"
         versionMessage = "1.12.2 匠サーバー"
-        runServerText = "1.12.2 匠サーバー"
+        runServerText = "1.12.2 匠サーバー "
         javaVer = "8"
     
     # チャンネルにメッセージ送信
