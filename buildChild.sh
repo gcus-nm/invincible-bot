@@ -30,8 +30,8 @@ sudo nice -n -10 $javaPath -Xms${ram}G -Xmx${ram}G -XX:+UnlockExperimentalVMOpti
 echo
 echo "Starting Backup To Google Drive. "
 echo
-cd /home/pi/minecraft/servers
-rclone sync -P $version GoogleDrive:RaspberryPi/Minecraft/$version
+cd 
+rclone sync -P /Users/user/minecraft/servers/$version GoogleDrive:RaspberryPi/Minecraft/$version
 
 echo
 read -p "Exit to press Enter."
