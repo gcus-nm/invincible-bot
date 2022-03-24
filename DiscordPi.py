@@ -18,6 +18,9 @@ default_channel = 951654109788905502
 # 送信先チャンネル
 send_channel = 0
 
+# 起動中テキスト
+runServerText = "Minecraft Server"
+
 client = commands.Bot(command_prefix='#')
 prevConnection = 76534639315283
 
@@ -67,11 +70,15 @@ async def start(ctx, version = "1.18.1P", ram = 12):
     # サーバーバージョンメッセージ
     versionMessage = "1.18.1"
     
+    # Discordのステータスに表示する文字列
+    global runServerText
+    
     # 起動鯖のバージョン指定
     if  (version == "1.18.1" or version == "1.18.1P"):
         
         version = "1.18.1P"
-        versionMessage = "1.18.1"
+        versionMessage = "1.18.1 バニラサーバー"
+        runServerText = "1.18.1 バニラサーバー"
         javaVer = "17"
         
     elif (version == "1.12.2Mohist" or version == "takumi" or
@@ -79,10 +86,11 @@ async def start(ctx, version = "1.18.1P", ram = 12):
         
         version = "1.12.2Mohist"
         versionMessage = "1.12.2 匠サーバー"
+        runServerText = "1.12.2 匠サーバー"
         javaVer = "8"
     
     # チャンネルにメッセージ送信
-    sendMessage = "サーバー [ " + versionMessage + " ] の起動を開始します..."
+    sendMessage = versionMessage + " の起動を開始します..."
     await send_channel.send(sendMessage)
     
     # 起動コマンドをシェルで起動
@@ -126,9 +134,12 @@ async def SurveillanceServer():
     result = mySocket.connect_ex((serverAdr, int(port)))
     
     # 接続成功
-    if result == 0:                
+    if result == 0:             
+        # ステータスメッセージ
+        global runServerText
+        
         # Botのステータス変更
-        stat = discord.Game(name="Minecraft Server")
+        stat = discord.Game(name=runServerText)
         await client.change_presence(status=discord.Status.online, activity=stat)
         
         # 前回は接続できなかった場合
