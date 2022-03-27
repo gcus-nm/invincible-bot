@@ -88,6 +88,15 @@ async def start(ctx, version = "1.18.1P", ram = 12):
         versionMessage = "1.12.2 匠サーバー"
         runServerText = "1.12.2 匠サーバー "
         javaVer = "8"
+        
+    elif (version == "1.12.2SkyFactory4" or
+          version == "sky" or version == "Sky" or 
+          version == "skyfactory" or version == "SkyFactory"):
+                
+        version = "1.12.2SkyFactory4"
+        versionMessage = "1.12.2 SkyFactory"
+        runServerText = "1.12.2 SkyFactory "
+        javaVer = "8"
     
     # チャンネルにメッセージ送信
     sendMessage = versionMessage + " の起動を開始します..."
