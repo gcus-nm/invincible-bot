@@ -32,8 +32,6 @@ server_port = 25024
 rcon_password = 2126
 # rconポート
 rcon_port = 25025
-    
-loop = asyncio.get_event_loop()
 
 client = commands.Bot(command_prefix='#')
 prevConnection = 76534639315283
@@ -56,20 +54,7 @@ async def on_ready():
     
 # commandコマンド
 @client.command()
-async def command(ctx, cmd = "None"):   
-    loop.run_until_complete(commandBase(ctx, cmd))
-        
-# commandコマンド（短縮形）
-@client.command()
-async def cmd(ctx, cmd = "None"):
-    loop.run_until_complete(commandBase(ctx, cmd))
-    
-# commandコマンド（短縮形）
-@client.command()
-async def cm(ctx, cmd = "None"):
-    loop.run_until_complete(commandBase(ctx, cmd))
-    
-async def commandBase(ctx, cmd = "None"):
+async def command(ctx, *, cmd = "None"):   
     # 送信者がbotである場合は弾く
     if ctx.message.author.bot:
         return 
