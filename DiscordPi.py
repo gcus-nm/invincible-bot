@@ -53,17 +53,17 @@ async def on_ready():
     
 # commandコマンド
 @client.command()
-def command(ctx, cmd = "None"):   
+async def command(ctx, cmd = "None"):   
     command(ctx, cmd)
         
 # commandコマンド（短縮形）
 @client.command()
-def cmd(ctx, cmd = "None"):
+async def cmd(ctx, cmd = "None"):
     command(ctx, cmd)
     
 # commandコマンド（短縮形）
 @client.command()
-def cm(ctx, cmd = "None"):
+async def cm(ctx, cmd = "None"):
     command(ctx, cmd)
     
 async def commandBase(ctx, cmd = "None"):
