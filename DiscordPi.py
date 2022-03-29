@@ -7,7 +7,6 @@ Created on Thu Mar 10 12:28:29 2022
 
 import os
 import socket
-import asyncio
 import discord.ext
 from discord.ext import commands
 from discord.ext import tasks
@@ -37,6 +36,7 @@ client = commands.Bot(command_prefix='#')
 prevConnection = 76534639315283
 
 isServerRun = False
+isServerStartRequest = False
 
 # Python（Bot）起動時
 @client.event
@@ -96,6 +96,17 @@ async def start(ctx, version = "1.18.1P", ram = 12):
     # 送られてきたチャンネルを保存
     global send_channel
     send_channel = ctx.message.channel
+    
+    global isServerRun
+    global isServerStartRequest
+    
+    if isServerRun and isServerStartRequest == False:        
+        await send_channel.send("既にサーバーが起動しているため、起動できません。")
+        return
+    
+    isServerStartRequest = True
+    #　サーバーが指定時間内に建つかチェック
+    WaitRunServer.start()
     
     # javaバージョン
     javaVer = "17"
@@ -246,5 +257,9 @@ async def SurveillanceServer():
     # 切断
     mySocket.close()
     
+# サーバー起動コマンドから指定秒待つ
+@tasks.loop(seconds=60)
+async def WaitRunServer():
+    print("WOOOOOOOOOOOOOOO")
     
 client.run(os.environ.get('DISCORD_TOKEN'))
