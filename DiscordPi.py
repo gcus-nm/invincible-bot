@@ -160,6 +160,7 @@ async def stop(ctx):
         # rconパスワード
         global rcon_password
         # rconポート
+
         global rcon_port       
         
         with MCRcon(str(server_address), str(rcon_password), int(rcon_port))as mcr:
@@ -186,10 +187,10 @@ async def SurveillanceServer():
     mySocket.settimeout(5)
     result = mySocket.connect_ex((server_address, int(server_port)))
     
+    global isServerRun
     # 接続成功
     if result == 0:
         # 接続
-        global isServerRun
         isServerRun = True
         
         # ステータスメッセージ
@@ -208,7 +209,6 @@ async def SurveillanceServer():
     # 接続失敗
     else:        
         # 接続
-        global isServerRun
         isServerRun = False
         
         # Botのステータス変更
