@@ -53,7 +53,7 @@ async def on_ready():
     
 # commandコマンド
 @client.command()
-async def command(ctx):
+async def command(ctx, cmd):
     
     # 送信者がbotである場合は弾く
     if ctx.message.author.bot:
@@ -62,8 +62,19 @@ async def command(ctx):
     # 送られてきたチャンネルを保存
     global send_channel
     send_channel = ctx.message.channel
-    # チャンネルにメッセージ送信
-    await send_channel.send("現在有効なコマンド\n#start\tサーバーの起動\n#reboot\tPCの再起動")
+    
+    # サーバーアドレス
+    global server_address
+    # rconパスワード
+    global rcon_password
+    # rconポート
+    global rcon_port       
+        
+    with MCRcon(str(server_address), str(rcon_password), int(rcon_port))as mcr:
+        res = mcr.command(str(cmd))
+        
+    await send_channel.send(res)
+        
 
 # startコマンド
 @client.command()
@@ -154,7 +165,7 @@ async def stop(ctx):
     global isServerRun    
     
     if isServerRun:        
-        await send_channel.send("サーバーの停止を開始します...")
+        await send_channel.send("サーバーを停止します...")
         # サーバーアドレス
         global server_address
         # rconパスワード
@@ -168,7 +179,7 @@ async def stop(ctx):
             
     else:
         await send_channel.send("サーバーは起動していません。")    
-    
+            
 # サーバーとの接続が行えるか（サーバーが起動しているか）指定秒おきにチェック
 @tasks.loop(seconds=5)
 async def SurveillanceServer():
