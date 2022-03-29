@@ -7,6 +7,7 @@ Created on Thu Mar 10 12:28:29 2022
 
 import os
 import socket
+import asyncio
 import discord.ext
 from discord.ext import commands
 from discord.ext import tasks
@@ -31,6 +32,8 @@ server_port = 25024
 rcon_password = 2126
 # rconポート
 rcon_port = 25025
+    
+loop = asyncio.get_event_loop()
 
 client = commands.Bot(command_prefix='#')
 prevConnection = 76534639315283
@@ -54,17 +57,17 @@ async def on_ready():
 # commandコマンド
 @client.command()
 async def command(ctx, cmd = "None"):   
-    command(ctx, cmd)
+    loop.run_until_complete(commandBase(ctx, cmd))
         
 # commandコマンド（短縮形）
 @client.command()
 async def cmd(ctx, cmd = "None"):
-    command(ctx, cmd)
+    loop.run_until_complete(commandBase(ctx, cmd))
     
 # commandコマンド（短縮形）
 @client.command()
 async def cm(ctx, cmd = "None"):
-    command(ctx, cmd)
+    loop.run_until_complete(commandBase(ctx, cmd))
     
 async def commandBase(ctx, cmd = "None"):
     # 送信者がbotである場合は弾く
