@@ -100,8 +100,11 @@ async def start(ctx, version = "1.18.1P", ram = 12):
     global isServerRun
     global isServerStartRequest
     
-    if isServerRun and isServerStartRequest == False:        
+    if isServerRun:
         await send_channel.send("既にサーバーが起動しているため、起動できません。")
+        return
+    elif isServerStartRequest:
+        await send_channel.send("サーバー起動中のため、起動できません。")
         return
     
     isServerStartRequest = True
