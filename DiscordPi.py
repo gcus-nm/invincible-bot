@@ -274,7 +274,8 @@ async def WaitRunServer():
     else:
         isServerStartRequest = False
         if isServerRun == False:      
-            text = server_wait_time + "秒経ちましたがサーバーを起動できませんでした。"
+            text = str(server_wait_time) + "秒経ちましたがサーバーを起動できませんでした。"
             await send_channel.send(text)
+            WaitRunServer.stop()
     
 client.run(os.environ.get('DISCORD_TOKEN'))
