@@ -53,20 +53,20 @@ async def on_ready():
     
 # commandコマンド
 @client.command()
-async def command(ctx, cmd = "None"):   
+def command(ctx, cmd = "None"):   
     command(ctx, cmd)
         
 # commandコマンド（短縮形）
 @client.command()
-async def cmd(ctx, cmd = "None"):
+def cmd(ctx, cmd = "None"):
     command(ctx, cmd)
     
 # commandコマンド（短縮形）
 @client.command()
-async def cm(ctx, cmd = "None"):
+def cm(ctx, cmd = "None"):
     command(ctx, cmd)
     
-def commandBase(ctx, cmd = "None"):
+async def commandBase(ctx, cmd = "None"):
     # 送信者がbotである場合は弾く
     if ctx.message.author.bot:
         return 
