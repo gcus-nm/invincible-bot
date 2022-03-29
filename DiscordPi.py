@@ -84,6 +84,11 @@ async def command(ctx, cmd):
 @client.command()
 async def cmd(ctx, cmd):
     command(ctx, cmd)
+    
+# commandコマンド（短縮形）
+@client.command()
+async def cm(ctx, cmd):
+    command(ctx, cmd)
 
 # startコマンド
 @client.command()
