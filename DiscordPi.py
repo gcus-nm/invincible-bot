@@ -38,7 +38,6 @@ client = commands.Bot(command_prefix='#')
 prevConnection = 76534639315283
 
 isServerRun = False
-isServerStartRequest = False
 
 # Python（Bot）起動時
 @client.event
@@ -105,12 +104,6 @@ async def start(ctx, version = "1.18.1P", ram = 12):
     if isServerRun:
         await send_channel.send("既にサーバーが起動しているため、起動できません。")
         return
-    elif isServerStartRequest:
-        await send_channel.send("サーバー起動中のため、起動できません。")
-        return
-    
-    #　サーバーが指定時間内に建つかチェック
-    WaitRunServer.start()
     
     # javaバージョン
     javaVer = "17"
@@ -195,7 +188,6 @@ async def stop(ctx):
         # rconパスワード
         global rcon_password
         # rconポート
-
         global rcon_port       
         
         with MCRcon(str(server_address), str(rcon_password), int(rcon_port))as mcr:
@@ -260,22 +252,5 @@ async def SurveillanceServer():
     
     # 切断
     mySocket.close()
-    
-# サーバー起動コマンドから指定秒待つ
-@tasks.loop(seconds=server_wait_time)
-async def WaitRunServer():
-    global isServerRun
-    global isServerStartRequest
-    global server_wait_time
-    
-    # 初回
-    if isServerStartRequest == False:    
-        isServerStartRequest = True
-    else:
-        isServerStartRequest = False
-        if isServerRun == False:      
-            text = str(server_wait_time) + "秒経ちましたがサーバーを起動できませんでした。"
-            await send_channel.send(text)
-            WaitRunServer.stop()
     
 client.run(os.environ.get('DISCORD_TOKEN'))
