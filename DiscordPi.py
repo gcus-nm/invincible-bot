@@ -10,6 +10,7 @@ import socket
 import discord.ext
 from discord.ext import commands
 from discord.ext import tasks
+from mcrcon import MCRcon
 import subprocess
 
 # デフォルトチャンネル　（今は開発用サーバーのチャンネル）
@@ -21,8 +22,20 @@ send_channel = 0
 # 起動中テキスト
 runServerText = "Minecraft Server"
 
+# サーバー情報
+# アドレス
+server_address = 'gcus-MacPro.local'
+# マイクラポート
+server_port = 25024
+# rconパスワード
+rcon_password = 2126
+# rconポート
+rcon_port = 25025
+
 client = commands.Bot(command_prefix='#')
 prevConnection = 76534639315283
+
+isServerRun = False
 
 # Python（Bot）起動時
 @client.event
@@ -125,6 +138,36 @@ async def reboot(ctx):
     # リブート
     subprocess.run("sudo reboot", shell=True)
     
+# stopコマンド
+@client.command()
+async def stop(ctx):
+    
+    # 送信者がbotである場合は弾く
+    if ctx.message.author.bot:
+        return 
+    
+    # チャンネルIDを保存
+    global send_channel
+    send_channel = ctx.message.channel
+    
+    # サーバーが起動しているか
+    global isServerRun    
+    
+    if isServerRun:        
+        await send_channel.send("サーバーの停止を開始します...")
+        # サーバーアドレス
+        global server_address
+        # rconパスワード
+        global rcon_password
+        # rconポート
+        global rcon_port       
+        
+        with MCRcon(str(server_address), str(rcon_password), int(rcon_port))as mcr:
+            mcr.command("/stop")
+            
+    else:
+        await send_channel.send("サーバーは起動していません。")    
+    
 # サーバーとの接続が行えるか（サーバーが起動しているか）指定秒おきにチェック
 @tasks.loop(seconds=5)
 async def SurveillanceServer():
@@ -133,17 +176,22 @@ async def SurveillanceServer():
     global prevConnection
     
     # サーバーアドレス
-    serverAdr = 'gcus-MacPro.local'    
-    # ポート
-    port = 25024
+    global server_address
+    
+    # サーバーポート
+    global server_port
     
     # 接続テスト
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     mySocket.settimeout(5)
-    result = mySocket.connect_ex((serverAdr, int(port)))
+    result = mySocket.connect_ex((server_address, int(server_port)))
     
     # 接続成功
-    if result == 0:             
+    if result == 0:
+        # 接続
+        global isServerRun
+        isServerRun = True
+        
         # ステータスメッセージ
         global runServerText
         
@@ -159,6 +207,10 @@ async def SurveillanceServer():
         
     # 接続失敗
     else:        
+        # 接続
+        global isServerRun
+        isServerRun = False
+        
         # Botのステータス変更
         stat = discord.Game(name="#start でサーバーを起動できます　")
         await client.change_presence(status=discord.Status.idle, activity=stat)
