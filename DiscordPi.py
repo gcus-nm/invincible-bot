@@ -22,6 +22,8 @@ send_channel = 0
 # 起動中テキスト
 runServerText = "Minecraft Server"
 
+server_wait_time = 60
+
 # サーバー情報
 # アドレス
 server_address = 'gcus-MacPro.local'
@@ -107,7 +109,6 @@ async def start(ctx, version = "1.18.1P", ram = 12):
         await send_channel.send("サーバー起動中のため、起動できません。")
         return
     
-    isServerStartRequest = True
     #　サーバーが指定時間内に建つかチェック
     WaitRunServer.start()
     
@@ -141,8 +142,8 @@ async def start(ctx, version = "1.18.1P", ram = 12):
           version == "skyfactory" or version == "SkyFactory"):
                 
         version = "1.12.2SkyFactory4"
-        versionMessage = "1.12.2 SkyFactory"
-        runServerText = "1.12.2 SkyFactory "
+        versionMessage = "1.12.2 SkyFactory 4"
+        runServerText = "1.12.2 SkyFactory 4 "
         javaVer = "8"
     
     # チャンネルにメッセージ送信
@@ -261,8 +262,19 @@ async def SurveillanceServer():
     mySocket.close()
     
 # サーバー起動コマンドから指定秒待つ
-@tasks.loop(seconds=60)
+@tasks.loop(seconds=server_wait_time)
 async def WaitRunServer():
-    print("WOOOOOOOOOOOOOOO")
+    global isServerRun
+    global isServerStartRequest
+    global server_wait_time
+    
+    # 初回
+    if isServerStartRequest == False:    
+        isServerStartRequest = True
+    else:
+        isServerStartRequest = False
+        if isServerRun == False:      
+            text = server_wait_time + "秒経ちましたがサーバーを起動できませんでした。"
+            await send_channel.send(text)
     
 client.run(os.environ.get('DISCORD_TOKEN'))
