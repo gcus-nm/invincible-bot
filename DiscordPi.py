@@ -175,7 +175,7 @@ async def stop(ctx):
         global rcon_port       
         
         with MCRcon(str(server_address), str(rcon_password), int(rcon_port))as mcr:
-            mcr.command("/stop")
+            mcr.command("stop")
             
     else:
         await send_channel.send("サーバーは起動していません。")    
