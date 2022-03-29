@@ -63,17 +63,22 @@ async def command(ctx, cmd):
     global send_channel
     send_channel = ctx.message.channel
     
-    # サーバーアドレス
-    global server_address
-    # rconパスワード
-    global rcon_password
-    # rconポート
-    global rcon_port       
+    global isServerRun
+    if isServerRun:    
+        # サーバーアドレス
+        global server_address
+        # rconパスワード
+        global rcon_password
+        # rconポート
+        global rcon_port       
         
-    with MCRcon(str(server_address), str(rcon_password), int(rcon_port))as mcr:
-        res = mcr.command(str(cmd))
+        with MCRcon(str(server_address), str(rcon_password), int(rcon_port))as mcr:
+            res = mcr.command(str(cmd))
         
-    await send_channel.send(res)
+        await send_channel.send(res)
+        
+    else:
+        await send_channel.send("サーバーが起動していないのでコマンドを送信出来ませんでした。")        
         
 # commandコマンド（短縮形）
 @client.command()
