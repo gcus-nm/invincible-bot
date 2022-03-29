@@ -53,7 +53,7 @@ async def on_ready():
     
 # commandコマンド
 @client.command()
-async def command(ctx, cmd):
+async def command(ctx, cmd = "None"):
     
     # 送信者がbotである場合は弾く
     if ctx.message.author.bot:
@@ -62,6 +62,11 @@ async def command(ctx, cmd):
     # 送られてきたチャンネルを保存
     global send_channel
     send_channel = ctx.message.channel
+    
+    # コマンドが指定されてない
+    if cmd == "None":        
+        await send_channel.send("コマンドを入力してください。 （例） #command list")
+        return
     
     global isServerRun
     if isServerRun:    
