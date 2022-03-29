@@ -53,8 +53,20 @@ async def on_ready():
     
 # commandコマンド
 @client.command()
-async def command(ctx, cmd = "None"):
+async def command(ctx, cmd = "None"):   
+    command(ctx, cmd)
+        
+# commandコマンド（短縮形）
+@client.command()
+async def cmd(ctx, cmd = "None"):
+    command(ctx, cmd)
     
+# commandコマンド（短縮形）
+@client.command()
+async def cm(ctx, cmd = "None"):
+    command(ctx, cmd)
+    
+def commandBase(ctx, cmd = "None"):
     # 送信者がbotである場合は弾く
     if ctx.message.author.bot:
         return 
@@ -83,17 +95,7 @@ async def command(ctx, cmd = "None"):
         await send_channel.send(res)
         
     else:
-        await send_channel.send("サーバーが起動していないのでコマンドを送信出来ませんでした。")        
-        
-# commandコマンド（短縮形）
-@client.command()
-def cmd(ctx, cmd = "None"):
-    command(ctx, cmd)
-    
-# commandコマンド（短縮形）
-@client.command()
-def cm(ctx, cmd = "None"):
-    command(ctx, cmd)
+        await send_channel.send("サーバーが起動していないのでコマンドを送信出来ませんでした。")    
 
 # startコマンド
 @client.command()
