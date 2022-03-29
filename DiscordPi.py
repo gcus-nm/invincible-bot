@@ -87,12 +87,12 @@ async def command(ctx, cmd = "None"):
         
 # commandコマンド（短縮形）
 @client.command()
-async def cmd(ctx, cmd = "None"):
+def cmd(ctx, cmd = "None"):
     command(ctx, cmd)
     
 # commandコマンド（短縮形）
 @client.command()
-async def cm(ctx, cmd = "None"):
+def cm(ctx, cmd = "None"):
     command(ctx, cmd)
 
 # startコマンド
