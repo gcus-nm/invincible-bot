@@ -4,6 +4,8 @@ ram=$1
 version=$2
 javaVer=$3
 
+backupFolder="/Volumes/Data_1T/minecraft/BackUps/${version}"
+
 # show build server info
 echo -------------------------------
 echo Build server info
@@ -28,6 +30,7 @@ sudo nice -n -10 $javaPath -Xms${ram}G -Xmx${ram}G -XX:+UnlockExperimentalVMOpti
 
 ########################################################
 # Backup To DropBox
+#
 #echo
 #echo "Starting Backup To DropBox."
 #echo
@@ -43,19 +46,21 @@ sudo nice -n -10 $javaPath -Xms${ram}G -Xmx${ram}G -XX:+UnlockExperimentalVMOpti
 #
 ########################################################
 
-# Backup To NAS
+# Backup
 # Create Backup Folder
-mkdir -p /Users/user/minecraft/BackUps/$version
-cd /Users/user/minecraft/BackUps/$version
+mkdir -p $backupFolder
+cd $backupFolder
 
 # Archive Minecraft Directory
 FolderDate=`date '+%Y%m%d%H%M'`
-tar -zcvf minecraft_${version}_${FolderDate}.tar.gz /Users/user/minecraft/servers/$version
+tar -zcvf minecraft_${version}_${FolderDate}.tar.gz $backupFolder
 
+#########################################################
 # Copy To NAS
-mkdir -p /Volumes/gcus_nm/minecraft_BackUp/$version
-
-rsync -av --progress minecraft_${version}_${FolderDate}.tar.gz /Volumes/gcus_nm/minecraft_Backup/${version}/
+#
+# mkdir -p /Volumes/gcus_nm/minecraft_BackUp/$version
+# rsync -av --progress minecraft_${version}_${FolderDate}.tar.gz /Volumes/gcus_nm/minecraft_Backup/${version}/
+########################################################
 
 echo
 read -p "Exit to press Enter."
