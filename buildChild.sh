@@ -3,8 +3,8 @@
 ram=$1
 version=$2
 javaVer=$3
-
 backupFolder="/Volumes/Data_1T/minecraft/BackUps/${version}"
+minecraftDir="/Users/user/minecraft/servers/${version}"
 
 # show build server info
 echo -------------------------------
@@ -25,7 +25,7 @@ fi
 
 
 # Build
-cd /Users/user/minecraft/servers/${version}
+cd $minecraftDir
 sudo nice -n -10 $javaPath -Xms${ram}G -Xmx${ram}G -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -XX:G1NewSizePercent=40 -XX:G1MaxNewSizePercent=50 -XX:G1HeapRegionSize=16M -XX:G1ReservePercent=15 -XX:InitiatingHeapOccupancyPercent=20 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true -jar server.jar nogui
 
 ########################################################
@@ -35,7 +35,7 @@ sudo nice -n -10 $javaPath -Xms${ram}G -Xmx${ram}G -XX:+UnlockExperimentalVMOpti
 #echo "Starting Backup To DropBox."
 #echo
 #
-#rclone sync -P /Users/user/minecraft/servers/$version DropBox:Minecraft/$version 
+#rclone sync -P $minecraftDir DropBox:Minecraft/$version 
 #
 # Backup To Google Drive
 #echo
@@ -53,7 +53,7 @@ cd $backupFolder
 
 # Archive Minecraft Directory
 FolderDate=`date '+%Y%m%d%H%M'`
-tar -zcvf minecraft_${version}_${FolderDate}.tar.gz $backupFolder
+tar -zcvf minecraft_${version}_${FolderDate}.tar.gz $minecraftDir
 
 #########################################################
 # Copy To NAS
