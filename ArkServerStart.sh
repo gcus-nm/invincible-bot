@@ -1,6 +1,4 @@
-#!/bin/bash
-
-set -eu
+﻿#!/bin/bash
 
 readonly API_TENANT_ID="2c8c52cfd3204a8699a9d804231038c1" # テナントID
 readonly API_USERNAME="gncu58124125" # APIユーザー名
