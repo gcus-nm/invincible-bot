@@ -56,3 +56,6 @@ else
     echo "HTTP_STATUS = ${HTTP_STATUS}"
     exit 1
 fi
+
+echo
+read -p "Exit to press Enter."
