@@ -11,3 +11,5 @@ TOKEN=$(curl -i -X POST -H "Accept: application/json" -d ' { "auth": { "password
 # サーバー（VM起動）
 #curl -i -X POST -H "Accept: application/json" -H "X-Auth-Token: ${TOKEN}" -d '{"os-start": null}' ${URL_END_POINT_COMPUTE}/servers/${SERVER_UUID}/action
 
+# サーバー詳細取得
+curl -i -X GET -H "Accept: application/json" -H "X-Auth-Token: ${TOKEN}" ${URL_END_POINT_COMPUTE}/servers/${SERVER_UUID}
