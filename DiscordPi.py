@@ -320,7 +320,7 @@ async def ArkConnect():
     # 接続テスト
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     mySocket.settimeout(5)
-    result = mySocket.connect_ex(("163.44.248.46", 7777))
+    result = mySocket.connect_ex(("163.44.248.46", 27020))
     
     # 接続成功
     if result == 0:
