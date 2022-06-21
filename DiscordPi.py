@@ -150,6 +150,7 @@ async def start(ctx, version = "1.18.1P", ram = 12):
     await send_channel.send(sendMessage)
     
     # 起動コマンドをシェルで起動
+    print("Minecraft Server Start.")
     command = "osascript /Users/user/minecraft/Git/BuildMac.scpt";
     command = command + " " + str(version) + " " + str(ram) + " " + str(javaVer)
     
@@ -167,6 +168,7 @@ async def reboot(ctx):
     global send_channel
     send_channel = ctx.message.channel
     # チャンネルにメッセージ送信
+    print("Reboot.")
     await send_channel.send("サーバーPCの再起動を行います。")
     
     # リブート
@@ -187,7 +189,8 @@ async def stop(ctx):
     # サーバーが起動しているか
     global isServerRun    
     
-    if isServerRun:        
+    if isServerRun:
+        print("Minecraft Server Stop.")
         await send_channel.send("サーバーを停止します...")
         # サーバーアドレス
         global server_address
@@ -215,6 +218,7 @@ async def arkstart(ctx):
     send_channel = ctx.message.channel
     
     # チャンネルにメッセージ送信
+    print("ARK ConoHa Server Start.")
     sendMessage = "ARKのレンタルサーバーの起動を開始します..."
     await send_channel.send(sendMessage)
     
@@ -295,9 +299,11 @@ async def ConoHaStart():
     if result == 0:
     
         # チャンネルにメッセージ送信
+        print("ARK ConoHa Server Done.")
         sendMessage = "ARKのレンタルサーバーが起動しました！\nARKを起動します..."
         await send_channel.send(sendMessage)
         # sshで起動
+        print("ARK Server Start.")
         sshCommand = "osascript /Users/user/minecraft/Git/ArkServerStart.scpt"
         subprocess.run(sshCommand, shell=True)    
         
@@ -311,12 +317,13 @@ async def ArkConnect():
     # 接続テスト
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     mySocket.settimeout(5)
-    result = mySocket.connect_ex(("163.44.248.46", 27015))
+    result = mySocket.connect_ex(("163.44.248.46", 7777))
     
     # 接続成功
     if result == 0:
     
         # チャンネルにメッセージ送信
+        print("ARK Server Done.")
         sendMessage = "ARKが起動しました！"
         await send_channel.send(sendMessage)
         ArkConnect.stop()
