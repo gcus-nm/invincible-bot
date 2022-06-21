@@ -215,7 +215,7 @@ async def arkstart(ctx):
     send_channel = ctx.message.channel
     
     # サーバー起動
-    startCommand = "cd /Users/user/minecraft/Git/ArkServerStart.sh"
+    startCommand = "bash /Users/user/minecraft/Git/ArkServerStart.sh"
     subprocess.run(startCommand, shell=True)
     
     ConoHaStart.start()
