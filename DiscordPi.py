@@ -201,6 +201,24 @@ async def stop(ctx):
             
     else:
         await send_channel.send("サーバーは起動していません。")    
+        
+# ARK ConoHa サーバー起動コマンド
+@client.command()
+async def arkstart(ctx):
+    
+    # 送信者がbotである場合は弾く
+    if ctx.message.author.bot:
+        return 
+    
+    # チャンネルIDを保存
+    global send_channel
+    send_channel = ctx.message.channel
+    
+    # サーバー起動
+    startCommand = "cd /Users/user/minecraft/Git/ArkServerStart.sh"
+    subprocess.run(startCommand, shell=True)
+    
+    ConoHaStart.start()
             
 # サーバーとの接続が行えるか（サーバーが起動しているか）指定秒おきにチェック
 @tasks.loop(seconds=5)
@@ -258,5 +276,23 @@ async def SurveillanceServer():
     
     # 切断
     mySocket.close()
+    
+
+# ARKサーバー（ConoHa）が立ったかチェック
+@tasks.loop(seconds=10)
+async def ConoHaStart():
+        
+    # 接続テスト
+    mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    mySocket.settimeout(5)
+    result = mySocket.connect_ex(("163.44.248.46", 22))
+    
+    # 接続成功
+    if result == 0:
+        # sshで起動
+        sshCommand = "sshpass -p Smashsmash_12 ssh root@163.44.248.46 -p 22 . ArkStart.sh"
+        subprocess.run(sshCommand, shell=True)    
+        
+        ConoHaStart.stop()        
     
 client.run(os.environ.get('DISCORD_TOKEN'))
