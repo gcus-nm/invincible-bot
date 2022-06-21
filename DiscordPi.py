@@ -309,6 +309,9 @@ async def ConoHaStart():
         
         ConoHaStart.stop()
         ArkConnect.start()
+    
+    # 切断
+    mySocket.close()
         
 # ARKに接続できるかチェック
 @tasks.loop(seconds=5)
@@ -327,5 +330,8 @@ async def ArkConnect():
         sendMessage = "ARKが起動しました！"
         await send_channel.send(sendMessage)
         ArkConnect.stop()
+    
+    # 切断
+    mySocket.close()
     
 client.run(os.environ.get('DISCORD_TOKEN'))
