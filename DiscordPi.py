@@ -219,7 +219,7 @@ async def arkstart(ctx):
     await send_channel.send(sendMessage)
     
     # サーバー起動
-    startCommand = "bash /Users/user/minecraft/Git/ArkServerStart.sh"
+    startCommand = "osascript /Users/user/minecraft/Git/ConohaStart.scpt"
     subprocess.run(startCommand, shell=True)
     
     ConoHaStart.start()
@@ -298,7 +298,7 @@ async def ConoHaStart():
         sendMessage = "ARKのレンタルサーバーが起動しました！\nARKを起動します..."
         await send_channel.send(sendMessage)
         # sshで起動
-        sshCommand = "sshpass -p Smashsmash_12 ssh root@163.44.248.46 -p 22 . ArkStart.sh"
+        sshCommand = "osascript /Users/user/minecraft/Git/ArkServerStart.scpt"
         subprocess.run(sshCommand, shell=True)    
         
         ConoHaStart.stop()
