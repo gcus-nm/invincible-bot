@@ -263,7 +263,7 @@ async def arkstop(ctx, stopTime = 60):
         print("Ark Server Stop.")
         stopMes = str(stopTime) + "秒後にARKサーバーを停止します。"
         with MCRcon(conoha_server_address, str(ark_admin_password), int(ark_rcon_port))as mcr:
-            mcr.command("Broadcast Stop the server after" + stopTime + "seconds.")
+            mcr.command("Broadcast Stop the server after" + str(stopTime) + "seconds.")
         await send_channel.send(stopMes)
         
         time.sleep(stopTime)
@@ -471,7 +471,7 @@ async def ArkConnect():
     
         # チャンネルにメッセージ送信
         print("ARK Server Done.")
-        sendMessage = "ARKが起動しました！"
+        sendMessage = "ARKが起動しました！（でも30秒ぐらい待ってね）"
         await send_channel.send(sendMessage)
         ArkConnect.stop()
     
