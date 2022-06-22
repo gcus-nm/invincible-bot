@@ -12,6 +12,7 @@ from discord.ext import commands
 from discord.ext import tasks
 from mcrcon import MCRcon
 import subprocess
+import time
 
 # デフォルトチャンネル　（今は開発用サーバーのチャンネル）
 default_channel = 951654109788905502
@@ -243,7 +244,7 @@ async def arkstart(ctx):
     
 # ARK stopコマンド
 @client.command()
-async def arkstop(ctx):
+async def arkstop(ctx, stopTime = 60):
     
     global conoha_server_address
     global ark_rcon_port
@@ -260,7 +261,13 @@ async def arkstop(ctx):
     
     if isArkServerRun:
         print("Ark Server Stop.")
-        await send_channel.send("ARKサーバーを停止します...")
+        stopMes = str(stopTime) + "秒後にARKサーバーを停止します。"
+        await send_channel.send(stopMes)
+        with MCRcon(conoha_server_address, str(ark_admin_password), int(ark_rcon_port))as mcr:
+            mcr.command("Broadcast " + stopMes)
+        
+        time.sleep(stopTime)
+        await send_channel.send("停止を開始します...")
         
         with MCRcon(conoha_server_address, str(ark_admin_password), int(ark_rcon_port))as mcr:
             mcr.command("DoExit")
@@ -295,12 +302,35 @@ async def arkcommand(ctx, *, cmd = "None"):
     if isArkServerRun:  
         
         with MCRcon(str(conoha_server_address), str(ark_admin_password), int(ark_rcon_port))as mcr:
-            res = mcr.command(str(cmd))
-        
-        await send_channel.send(res)
+            mcr.command(str(cmd))
         
     else:
-        await send_channel.send("サーバーが起動していないのでコマンドを送信出来ませんでした。")    
+        await send_channel.send("サーバーが起動していないのでコマンドを送信出来ませんでした。")
+        
+# ARK commandコマンド
+@client.command()
+async def arksay(ctx, *, say = ""):   
+    
+    global isArkServerRun
+    global conoha_server_address
+    global ark_admin_password
+    global ark_rcon_port
+    
+    # 送信者がbotである場合は弾く
+    if ctx.message.author.bot:
+        return 
+    
+    # 送られてきたチャンネルを保存
+    global send_channel
+    send_channel = ctx.message.channel
+        
+    if isArkServerRun:  
+        
+        with MCRcon(str(conoha_server_address), str(ark_admin_password), int(ark_rcon_port))as mcr:
+            mcr.command("Broadcast " + str(say))
+        
+    else:
+        await send_channel.send("サーバーが起動していないので発言できませんでした。")    
             
 # サーバーとの接続が行えるか（サーバーが起動しているか）指定秒おきにチェック
 @tasks.loop(seconds=5)
