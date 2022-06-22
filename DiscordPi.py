@@ -33,11 +33,24 @@ server_port = 25024
 rcon_password = 2126
 # rconポート
 rcon_port = 25025
+# サーバー起動状態
+isServerRun = False
+
+# ARK設定
+# ConoHa アドレス
+conoha_server_address = '163.44.248.46'
+# ConoHa SSHポート
+conoha_ssh_port = 22
+# rconポート
+ark_rcon_port = 27020
+# ARK　adminパスワード
+ark_admin_password = 2126
+# ARKサーバー起動状態
+isArkServerRun = False
 
 client = commands.Bot(command_prefix='#')
 prevConnection = 76534639315283
 
-isServerRun = False
 
 # Python（Bot）起動時
 @client.event
@@ -227,6 +240,32 @@ async def arkstart(ctx):
     subprocess.run(startCommand, shell=True)
     
     ConoHaStart.start()
+    
+# stopコマンド
+@client.command()
+async def arkstop(ctx):
+    
+    global conoha_server_address
+    global ark_rcon_port
+    global ark_admin_password
+    global isArkServerRun
+    
+    # 送信者がbotである場合は弾く
+    if ctx.message.author.bot:
+        return 
+    
+    # チャンネルIDを保存
+    global send_channel
+    send_channel = ctx.message.channel
+    
+    if isArkServerRun:
+        print("Ark Server Stop.")
+        await send_channel.send("ARKサーバーを停止します...")
+        
+        with MCRcon(conoha_server_address, str(ark_admin_password), int(ark_rcon_port))as mcr:
+            mcr.command("DoExit")
+    else:
+        await send_channel.send("ARKサーバーは起動していません。")    
             
 # サーバーとの接続が行えるか（サーバーが起動しているか）指定秒おきにチェック
 @tasks.loop(seconds=5)
@@ -289,11 +328,15 @@ async def SurveillanceServer():
 # ARKサーバー（ConoHa）が立ったかチェック
 @tasks.loop(seconds=5)
 async def ConoHaStart():
+    
+    global conoha_server_address
+    global conoha_ssh_port
+    global isArkServerRun
         
-    # 接続テスト
+    # 接続テスト（ssh）
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     mySocket.settimeout(5)
-    result = mySocket.connect_ex(("163.44.248.46", 22))
+    result = mySocket.connect_ex((conoha_server_address, int(conoha_ssh_port)))
     
     # 接続成功
     if result == 0:
@@ -307,6 +350,7 @@ async def ConoHaStart():
         sshCommand = "osascript /Users/user/minecraft/Git/ArkServerStart.scpt"
         subprocess.run(sshCommand, shell=True)    
         
+        isArkServerRun = True
         ConoHaStart.stop()
         ArkConnect.start()
     
@@ -317,10 +361,13 @@ async def ConoHaStart():
 @tasks.loop(seconds=5)
 async def ArkConnect():
     
+    global conoha_server_address
+    global ark_rcon_port
+    
     # 接続テスト
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     mySocket.settimeout(5)
-    result = mySocket.connect_ex(("163.44.248.46", 27020))
+    result = mySocket.connect_ex((conoha_server_address, int(ark_rcon_port)))
     
     # 接続成功
     if result == 0:
