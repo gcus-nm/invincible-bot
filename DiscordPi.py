@@ -262,12 +262,17 @@ async def arkstop(ctx, stopTime = 60):
     if isArkServerRun:
         print("Ark Server Stop.")
         stopMes = str(stopTime) + "秒後にARKサーバーを停止します。"
-        await send_channel.send(stopMes)
         with MCRcon(conoha_server_address, str(ark_admin_password), int(ark_rcon_port))as mcr:
-            mcr.command("Broadcast " + stopMes)
+            mcr.command("Broadcast Stop the server after" + stopTime + "seconds.")
+        await send_channel.send(stopMes)
         
         time.sleep(stopTime)
+        
+        with MCRcon(conoha_server_address, str(ark_admin_password), int(ark_rcon_port))as mcr:
+            mcr.command("Broadcast Stop the server.")            
         await send_channel.send("停止を開始します...")
+        
+        time.sleep(3)
         
         with MCRcon(conoha_server_address, str(ark_admin_password), int(ark_rcon_port))as mcr:
             mcr.command("DoExit")
