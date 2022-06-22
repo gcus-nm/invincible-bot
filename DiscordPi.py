@@ -41,7 +41,7 @@ isServerRun = False
 conoha_server_address = '163.44.248.46'
 # ConoHa SSHポート
 conoha_ssh_port = 22
-# rconポート
+# ARK rconポート
 ark_rcon_port = 27020
 # ARK　adminパスワード
 ark_admin_password = 2126
@@ -241,7 +241,7 @@ async def arkstart(ctx):
     
     ConoHaStart.start()
     
-# stopコマンド
+# ARK stopコマンド
 @client.command()
 async def arkstop(ctx):
     
@@ -264,8 +264,43 @@ async def arkstop(ctx):
         
         with MCRcon(conoha_server_address, str(ark_admin_password), int(ark_rcon_port))as mcr:
             mcr.command("DoExit")
+        
+        ArkDisConnect.start()
+        
     else:
-        await send_channel.send("ARKサーバーは起動していません。")    
+        await send_channel.send("ARKサーバーは起動していません。")
+        
+# ARK commandコマンド
+@client.command()
+async def arkcommand(ctx, *, cmd = "None"):   
+    
+    global isArkServerRun
+    global conoha_server_address
+    global ark_admin_password
+    global ark_rcon_port
+    
+    # 送信者がbotである場合は弾く
+    if ctx.message.author.bot:
+        return 
+    
+    # 送られてきたチャンネルを保存
+    global send_channel
+    send_channel = ctx.message.channel
+    
+    # コマンドが指定されてない
+    if cmd == "None":        
+        await send_channel.send("コマンドを入力してください。 （例） #arkcommand DoExit")
+        return
+    
+    if isArkServerRun:  
+        
+        with MCRcon(str(conoha_server_address), str(ark_admin_password), int(ark_rcon_port))as mcr:
+            res = mcr.command(str(cmd))
+        
+        await send_channel.send(res)
+        
+    else:
+        await send_channel.send("サーバーが起動していないのでコマンドを送信出来ませんでした。")    
             
 # サーバーとの接続が行えるか（サーバーが起動しているか）指定秒おきにチェック
 @tasks.loop(seconds=5)
@@ -356,6 +391,33 @@ async def ConoHaStart():
     
     # 切断
     mySocket.close()
+    
+# ARKサーバー（ConoHa）シャットダウンチェック
+@tasks.loop(seconds=5)
+async def ConoHaStop():
+    
+    global conoha_server_address
+    global conoha_ssh_port
+    global isArkServerRun
+        
+    # 接続テスト（ssh）
+    mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    mySocket.settimeout(5)
+    result = mySocket.connect_ex((conoha_server_address, int(conoha_ssh_port)))
+    
+    # 接続失敗
+    if result != 0:
+    
+        # チャンネルにメッセージ送信
+        print("ConoHa Server Shutdown　done.")
+        sendMessage = "ARKのレンタルサーバーがシャットダウンしました。"
+        await send_channel.send(sendMessage)
+        
+        isArkServerRun = False
+        ConoHaStop.stop()
+    
+    # 切断
+    mySocket.close()
         
 # ARKに接続できるかチェック
 @tasks.loop(seconds=5)
@@ -377,6 +439,37 @@ async def ArkConnect():
         sendMessage = "ARKが起動しました！"
         await send_channel.send(sendMessage)
         ArkConnect.stop()
+    
+    # 切断
+    mySocket.close()
+    
+# ARK切断チェック
+@tasks.loop(seconds=5)
+async def ArkDisConnect():
+    
+    global conoha_server_address
+    global ark_rcon_port
+    
+    # 接続テスト
+    mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    mySocket.settimeout(5)
+    result = mySocket.connect_ex((conoha_server_address, int(ark_rcon_port)))
+    
+    # 接続できない
+    if result != 0:
+    
+        # チャンネルにメッセージ送信
+        print("ARK Server shutdown Done.")
+        sendMessage = "ARKが終了しました。\nレンタルサーバーをシャットダウンします。"
+        await send_channel.send(sendMessage)
+        
+        # VM停止API
+        print("ConoHa Server Shutdown.")
+        sshCommand = "osascript /Users/user/minecraft/Git/ConoHaShutdown.scpt"
+        subprocess.run(sshCommand, shell=True)   
+        
+        ArkDisConnect.stop()
+        ConoHaStop.start()
     
     # 切断
     mySocket.close()
