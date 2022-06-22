@@ -303,12 +303,14 @@ async def arkcommand(ctx, *, cmd = "None"):
     if cmd == "None":        
         await send_channel.send("コマンドを入力してください。 （例） #arkcommand DoExit")
         return
-    
-    if isArkServerRun:  
         
+    if isArkServerRun:
+               
         with MCRcon(str(conoha_server_address), str(ark_admin_password), int(ark_rcon_port))as mcr:
             mcr.command(str(cmd))
-        
+            
+        if cmd == "DoExit":
+            ArkDisConnect.start()
     else:
         await send_channel.send("サーバーが起動していないのでコマンドを送信出来ませんでした。")
         
