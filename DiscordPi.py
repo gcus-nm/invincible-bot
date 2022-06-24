@@ -48,6 +48,8 @@ ark_rcon_port = 27020
 ark_admin_password = 2126
 # ARKサーバー起動状態
 isArkServerRun = False
+# ゲーム終了時にサーバーをおとすか
+isArkServerShutdown = 1
 
 client = commands.Bot(command_prefix='#')
 prevConnection = 76534639315283
@@ -244,12 +246,15 @@ async def arkstart(ctx):
     
 # ARK stopコマンド
 @client.command()
-async def arkstop(ctx, stopTime = 60):
+async def arkstop(ctx, stopTime = 60, isServerShut = 1):
     
     global conoha_server_address
     global ark_rcon_port
     global ark_admin_password
     global isArkServerRun
+    global isArkServerShutdown
+    
+    isArkServerShutdown = isServerShut
     
     # 送信者がbotである場合は弾く
     if ctx.message.author.bot:
@@ -482,10 +487,11 @@ async def ArkConnect():
     
 # ARK切断チェック
 @tasks.loop(seconds=5)
-async def ArkDisConnect():
+async def ArkDisConnect(isShutdown = 1):
     
     global conoha_server_address
     global ark_rcon_port
+    global isArkServerShutdown
     
     # 接続テスト
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -497,7 +503,15 @@ async def ArkDisConnect():
     
         # チャンネルにメッセージ送信
         print("ARK Server shutdown Done.")
-        sendMessage = "ARKが終了しました。\nレンタルサーバーをシャットダウンします。"
+        sendMessage = "ARKが終了しました。"
+        
+        if isArkServerShutdown != 1:            
+            sendMessage += "\nレンタルサーバーのシャットダウンは行いません。"
+            await send_channel.send(sendMessage)
+            ArkDisConnect.stop()
+            return
+            
+        sendMessage += "\nレンタルサーバーをシャットダウンします。"
         await send_channel.send(sendMessage)
         
         # VM停止API
