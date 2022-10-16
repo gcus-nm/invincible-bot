@@ -5,27 +5,42 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Discord.Net.Providers.WS4Net;
 
 namespace Discord_Bot_v2
 {	class Program
 	{
 		private DiscordSocketClient m_Client;
-		public static CommandService m_Command;
+		public static CommandService m_Commands;
 		public static IServiceProvider m_Services;
-		public static void Main(string[] args)
-			=> new Program().InitializeAsync().GetAwaiter().GetResult();
 
-		public async Task InitializeAsync()
+		private Program()
 		{
 			m_Client = new DiscordSocketClient(new DiscordSocketConfig
 			{
-				LogLevel = LogSeverity.Info
+				LogLevel = LogSeverity.Info,
+				WebSocketProvider = WS4NetProvider.Instance
 			});
 
-			m_Client.Log += Log;
-			m_Command = new CommandService();
-			m_Services = new ServiceCollection().BuildServiceProvider();
+			m_Commands = new CommandService(new CommandServiceConfig()
+			{
+				LogLevel = LogSeverity.Info,
+			});
 
+
+			m_Client.Log += Log;
+			m_Commands.Log += Log;
+
+			m_Services = ConfigureServices();
+		}
+
+		public static Task Main(string[] args)
+		{
+			return new Program().InitializeAsync();
+		}
+
+		public async Task InitializeAsync()
+		{
 			await InitCommands();
 
 			string token = Environment.GetEnvironmentVariable("DISCORD_TOKEN");
@@ -41,8 +56,15 @@ namespace Discord_Bot_v2
 		/// </summary>
 		private async Task InitCommands()
 		{
-			await m_Command.AddModulesAsync(Assembly.GetEntryAssembly(), m_Services);
+			await m_Commands.AddModulesAsync(Assembly.GetEntryAssembly(), m_Services);
 			m_Client.MessageReceived += HandleCommandAsync;
+		}
+		private static IServiceProvider ConfigureServices()
+		{
+			var map = new ServiceCollection();
+				//.AddSingleton(new SomeServiceClass());
+
+			return map.BuildServiceProvider();
 		}
 
 		/// <summary>
@@ -83,7 +105,7 @@ namespace Discord_Bot_v2
 			{
 				var context = new SocketCommandContext(m_Client, message);
 
-				await m_Command.ExecuteAsync(context, pos, m_Services);
+				await m_Commands.ExecuteAsync(context, pos, m_Services);
 			}
 		}
 	}

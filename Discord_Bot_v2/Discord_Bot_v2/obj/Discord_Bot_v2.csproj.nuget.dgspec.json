@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\DiscordBot\\Discord_Bot_v2\\Discord_Bot_v2\\Discord_Bot_v2.csproj": {}
+    "D:\\_Games\\Minecraft\\Git\\minecraftServer-raspberrypi\\Discord_Bot_v2\\Discord_Bot_v2\\Discord_Bot_v2.csproj": {}
   },
   "projects": {
-    "D:\\DiscordBot\\Discord_Bot_v2\\Discord_Bot_v2\\Discord_Bot_v2.csproj": {
+    "D:\\_Games\\Minecraft\\Git\\minecraftServer-raspberrypi\\Discord_Bot_v2\\Discord_Bot_v2\\Discord_Bot_v2.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\DiscordBot\\Discord_Bot_v2\\Discord_Bot_v2\\Discord_Bot_v2.csproj",
+        "projectUniqueName": "D:\\_Games\\Minecraft\\Git\\minecraftServer-raspberrypi\\Discord_Bot_v2\\Discord_Bot_v2\\Discord_Bot_v2.csproj",
         "projectName": "Discord_Bot_v2",
-        "projectPath": "D:\\DiscordBot\\Discord_Bot_v2\\Discord_Bot_v2\\Discord_Bot_v2.csproj",
+        "projectPath": "D:\\_Games\\Minecraft\\Git\\minecraftServer-raspberrypi\\Discord_Bot_v2\\Discord_Bot_v2\\Discord_Bot_v2.csproj",
         "packagesPath": "C:\\Users\\gcus_nm12\\.nuget\\packages\\",
-        "outputPath": "D:\\DiscordBot\\Discord_Bot_v2\\Discord_Bot_v2\\obj\\",
+        "outputPath": "D:\\_Games\\Minecraft\\Git\\minecraftServer-raspberrypi\\Discord_Bot_v2\\Discord_Bot_v2\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\gcus_nm12\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -43,6 +43,10 @@
             "Discord.Net": {
               "target": "Package",
               "version": "[3.8.1, )"
+            },
+            "Discord.Net.Providers.WS4Net": {
+              "target": "Package",
+              "version": "[2.4.0, )"
             },
             "Microsoft.Extensions.DependencyInjection": {
               "target": "Package",
