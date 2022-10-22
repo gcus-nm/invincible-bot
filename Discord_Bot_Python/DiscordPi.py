@@ -5,11 +5,10 @@ Created on Thu Mar 10 12:28:29 2022
 @author: gcus_nm12
 """
 
-import ARK
+import DiscordPi_ARK
 
 import os
 import subprocess
-import discord
 
 from discord.ext import commands
 
@@ -26,7 +25,7 @@ client = commands.Bot(command_prefix='#')
 async def on_ready():
     
     #　サーバー接続チェック開始
-    ARK.SurveillanceServer.start()
+    DiscordPi_ARK.SurveillanceServer.start()
     
     # 送信チャンネルのデフォルト設定
     global send_channel
