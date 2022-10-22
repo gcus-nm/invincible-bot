@@ -24,9 +24,6 @@ client = commands.Bot(command_prefix='#')
 @client.event
 async def on_ready():
     
-    #　サーバー接続チェック開始
-    DiscordPi_ARK.SurveillanceServer.start()
-    
     # 送信チャンネルのデフォルト設定
     global send_channel
     global default_channel
