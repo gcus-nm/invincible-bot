@@ -1,43 +1,35 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Mar 10 12:28:29 2022
+Created on Sat Oct 22 17:46:15 2022
 
 @author: gcus_nm12
 """
 
-import os
+import DiscordPi
+import subprocess
+
 import socket
 import discord.ext
-from discord.ext import commands
+from enum import IntEnum
 from discord.ext import tasks
 from mcrcon import MCRcon
-import subprocess
 import time
 
-# デフォルトチャンネル　（今は開発用サーバーのチャンネル）
-default_channel = 951654109788905502
 
-# 送信先チャンネル
-send_channel = 0
-
-# 起動中テキスト
-runServerText = "Minecraft Server"
-
-server_wait_time = 60
-
-# サーバー情報
-# アドレス
-server_address = 'gcus-MacPro.local'
-# マイクラポート
-server_port = 25024
-# rconパスワード
-rcon_password = 2126
-# rconポート
-rcon_port = 25025
-# サーバー起動状態
-isServerRun = False
-
+# ARKサーバー状態
+class ArkServerState(IntEnum):
+    VPS_SHUTDOWN = 1    #　サーバーが動いていない状態
+    VPS_STARTING = 2    #　サーバー起動中
+    VPS_RUNNING = 3     # サーバーは動いてるけどARKを起動していない状態
+    ARK_STARTING = 4    # ARK起動中
+    ARK_RUNNING = 5     # ARKサーバーが起動している状態
+    ARK_STOPPING = 6    # ARK停止中
+    VPS_STOPPING = 7    # サーバー停止中
+    UNKNOUN = 99        # おかしい
+    
 # ARK設定
+# サーバー状態
+ark_server_state = ArkServerState.UNKNOUN
 # ConoHa アドレス
 conoha_server_address = '163.44.248.46'
 # ConoHa SSHポート
@@ -46,212 +38,69 @@ conoha_ssh_port = 22
 ark_rcon_port = 27020
 # ARK　adminパスワード
 ark_admin_password = 2126
-# ARKサーバー起動状態
-isArkServerRun = False
 # ゲーム終了時にサーバーをおとすか
 isArkServerShutdown = 1
-
-client = commands.Bot(command_prefix='#')
+# 前回接続情報
 prevConnection = 76534639315283
 
-
-# Python（Bot）起動時
-@client.event
-async def on_ready():
-    
-    #　サーバー接続チェック開始
-    SurveillanceServer.start()
-    
-    # 送信チャンネルのデフォルト設定
-    global send_channel
-    global default_channel
-    
-    send_channel = client.get_channel(default_channel)
-    print("Bot Start.")
-    
-# commandコマンド
-@client.command()
-async def command(ctx, *, cmd = "None"):   
-    # 送信者がbotである場合は弾く
-    if ctx.message.author.bot:
-        return 
-    
-    # 送られてきたチャンネルを保存
-    global send_channel
-    send_channel = ctx.message.channel
-    
-    # コマンドが指定されてない
-    if cmd == "None":        
-        await send_channel.send("コマンドを入力してください。 （例） #command list")
-        return
-    
-    global isServerRun
-    if isServerRun:    
-        # サーバーアドレス
-        global server_address
-        # rconパスワード
-        global rcon_password
-        # rconポート
-        global rcon_port       
-        
-        with MCRcon(str(server_address), str(rcon_password), int(rcon_port))as mcr:
-            res = mcr.command(str(cmd))
-        
-        await send_channel.send(res)
-        
-    else:
-        await send_channel.send("サーバーが起動していないのでコマンドを送信出来ませんでした。")    
-
-# startコマンド
-@client.command()
-async def start(ctx, version = "1.18.1P", ram = 12):
-    
-    # 送信者がbotである場合は弾く
-    if ctx.message.author.bot:
-        return 
-    
-    # 送られてきたチャンネルを保存
-    global send_channel
-    send_channel = ctx.message.channel
-    
-    global isServerRun
-    global isServerStartRequest
-    
-    if isServerRun:
-        await send_channel.send("既にサーバーが起動しているため、起動できません。")
-        return
-    
-    # javaバージョン
-    javaVer = "17"
-    
-    # サーバーバージョンメッセージ
-    versionMessage = "1.18.1"
-    
-    # Discordのステータスに表示する文字列
-    global runServerText
-    
-    # 起動鯖のバージョン指定
-    if  (version == "1.18.1" or version == "1.18.1P"):
-        
-        version = "1.18.1P"
-        versionMessage = "1.18.1 バニラサーバー"
-        runServerText = "1.18.1 バニラサーバー "
-        javaVer = "17"
-        
-    elif (version == "1.12.2Mohist" or version == "takumi" or
-        version == "Takumi" or version == "TAKUMI"):
-        
-        version = "1.12.2Mohist"
-        versionMessage = "1.12.2 匠サーバー"
-        runServerText = "1.12.2 匠サーバー "
-        javaVer = "8"
-        
-    elif (version == "1.12.2SkyFactory4" or
-          version == "sky" or version == "Sky" or 
-          version == "skyfactory" or version == "SkyFactory"):
-                
-        version = "1.12.2SkyFactory4"
-        versionMessage = "1.12.2 SkyFactory 4"
-        runServerText = "1.12.2 SkyFactory 4 "
-        javaVer = "8"
-
-    elif (version == "1.19"):
-        version = "1.19"
-        versionMessage = "1.19"
-        runServerText = "1.19"
-        javaVer = "17"
-    
-    # チャンネルにメッセージ送信
-    sendMessage = versionMessage + " の起動を開始します..."
-    await send_channel.send(sendMessage)
-    
-    # 起動コマンドをシェルで起動
-    print("Minecraft Server Start.")
-    command = "osascript /Users/user/minecraft/Git/BuildMac.scpt";
-    command = command + " " + str(version) + " " + str(ram) + " " + str(javaVer)
-    
-    subprocess.run(command, shell=True)
-    
-# rebootコマンド
-@client.command()
-async def reboot(ctx):
-    
-    # 送信者がbotである場合は弾く
-    if ctx.message.author.bot:
-        return 
-    
-    # チャンネルIDを保存
-    global send_channel
-    send_channel = ctx.message.channel
-    # チャンネルにメッセージ送信
-    print("Reboot.")
-    await send_channel.send("サーバーPCの再起動を行います。")
-    
-    # リブート
-    subprocess.run("sudo reboot", shell=True)
-    
-# stopコマンド
-@client.command()
-async def stop(ctx):
-    
-    # 送信者がbotである場合は弾く
-    if ctx.message.author.bot:
-        return 
-    
-    # チャンネルIDを保存
-    global send_channel
-    send_channel = ctx.message.channel
-    
-    # サーバーが起動しているか
-    global isServerRun    
-    
-    if isServerRun:
-        print("Minecraft Server Stop.")
-        await send_channel.send("サーバーを停止します...")
-        # サーバーアドレス
-        global server_address
-        # rconパスワード
-        global rcon_password
-        # rconポート
-        global rcon_port       
-        
-        with MCRcon(str(server_address), str(rcon_password), int(rcon_port))as mcr:
-            mcr.command("stop")
-            
-    else:
-        await send_channel.send("サーバーは起動していません。")    
-        
+      
 # ARK ConoHa サーバー起動コマンド
-@client.command()
+@DiscordPi.client.command()
 async def arkstart(ctx):
     
     # 送信者がbotである場合は弾く
     if ctx.message.author.bot:
-        return 
+        return     
+    
     
     # チャンネルIDを保存
     global send_channel
     send_channel = ctx.message.channel
     
-    # チャンネルにメッセージ送信
-    print("ARK ConoHa Server Start.")
-    sendMessage = "ARKのレンタルサーバーの起動を開始します..."
-    await send_channel.send(sendMessage)
+    global ark_server_state
+    if ark_server_state >= ArkServerState.ARK_STARTING and ark_server_state != ArkServerState.UNKNOUN:
+        print("ARK was started.")
+        sendMessage = "ARKはすでに開始されています。"
+        await send_channel.send(sendMessage)
+        return
     
-    # サーバー起動
-    startCommand = "osascript /Users/user/minecraft/Git/ConohaStart.scpt"
-    subprocess.run(startCommand, shell=True)
     
-    ConoHaStart.start()
+    if ark_server_state >= ArkServerState.VPS_STARTING and ark_server_state != ArkServerState.UNKNOUN:
+        ark_server_state = ArkServerState.ARK_STARTING
+    
+        # チャンネルにメッセージ送信
+        sendMessage = "レンタルサーバーは起動しているので、ARKを開始します..."
+        await send_channel.send(sendMessage)
+        
+        print("ARK Server Start.")
+        
+        sshCommand = "osascript /Users/user/minecraft/Git/ArkServerStart.scpt"
+        subprocess.run(sshCommand, shell=True)    
+        
+        ArkConnect.start()
+    
+    else:        
+        ark_server_state = ArkServerState.VPS_STARTING
+    
+        # チャンネルにメッセージ送信
+        sendMessage = "ARKのレンタルサーバーの起動を開始します..."
+        await send_channel.send(sendMessage)
+        
+        print("ARK ConoHa Server Start.")
+    
+        # サーバー起動
+        startCommand = "osascript /Users/user/minecraft/Git/ConohaStart.scpt"
+        subprocess.run(startCommand, shell=True)
+    
+        ConoHaStart.start()
     
 # ARK stopコマンド
-@client.command()
+@DiscordPi.client.command()
 async def arkstop(ctx, stopTime = 60, isServerShut = 1):
     
     global conoha_server_address
     global ark_rcon_port
     global ark_admin_password
-    global isArkServerRun
     global isArkServerShutdown
     
     isArkServerShutdown = isServerShut
@@ -264,7 +113,10 @@ async def arkstop(ctx, stopTime = 60, isServerShut = 1):
     global send_channel
     send_channel = ctx.message.channel
     
-    if isArkServerRun:
+    global ark_server_state
+    if ark_server_state == ArkServerState.ARK_RUNNING:
+        
+        ark_server_state = ArkServerState.ARK_STOPPING
         print("Ark Server Stop.")
         stopMes = str(stopTime) + "秒後にARKサーバーを停止します。"
         with MCRcon(conoha_server_address, str(ark_admin_password), int(ark_rcon_port))as mcr:
@@ -288,10 +140,9 @@ async def arkstop(ctx, stopTime = 60, isServerShut = 1):
         await send_channel.send("ARKサーバーは起動していません。")
         
 # ARK commandコマンド
-@client.command()
+@DiscordPi.client.command()
 async def arkcommand(ctx, *, cmd = "None"):   
     
-    global isArkServerRun
     global conoha_server_address
     global ark_admin_password
     global ark_rcon_port
@@ -309,7 +160,8 @@ async def arkcommand(ctx, *, cmd = "None"):
         await send_channel.send("コマンドを入力してください。 （例） #arkcommand DoExit")
         return
         
-    if isArkServerRun:
+    global ark_server_state
+    if ark_server_state == ArkServerState.ARK_RUNNING:
                
         with MCRcon(str(conoha_server_address), str(ark_admin_password), int(ark_rcon_port))as mcr:
             mcr.command(str(cmd))
@@ -320,10 +172,9 @@ async def arkcommand(ctx, *, cmd = "None"):
         await send_channel.send("サーバーが起動していないのでコマンドを送信出来ませんでした。")
         
 # ARK commandコマンド
-@client.command()
+@DiscordPi.client.command()
 async def arksay(ctx, *, say = ""):   
     
-    global isArkServerRun
     global conoha_server_address
     global ark_admin_password
     global ark_rcon_port
@@ -336,7 +187,8 @@ async def arksay(ctx, *, say = ""):
     global send_channel
     send_channel = ctx.message.channel
         
-    if isArkServerRun:  
+    global ark_server_state
+    if ark_server_state == ArkServerState.ARK_RUNNING:
         
         with MCRcon(str(conoha_server_address), str(ark_admin_password), int(ark_rcon_port))as mcr:
             mcr.command("Broadcast " + str(say))
@@ -372,8 +224,8 @@ async def SurveillanceServer():
         global runServerText
         
         # Botのステータス変更
-        stat = discord.Game(name=runServerText)
-        await client.change_presence(status=discord.Status.online, activity=stat)
+        stat = DiscordPi.discord.Game(name=runServerText)
+        await DiscordPi.client.change_presence(status=DiscordPi.discord.Status.online, activity=stat)
         
         # 前回は接続できなかった場合
         if (prevConnection != result and prevConnection != 76534639315283):
@@ -387,8 +239,8 @@ async def SurveillanceServer():
         isServerRun = False
         
         # Botのステータス変更
-        stat = discord.Game(name="#start でサーバーを起動できます　")
-        await client.change_presence(status=discord.Status.idle, activity=stat)
+        stat = DiscordPi.discord.Game(name="#start でサーバーを起動できます　")
+        await DiscordPi.client.change_presence(status=DiscordPi.discord.Status.idle, activity=stat)
         
         # 前回は接続できていた場合
         if (prevConnection != result and prevConnection != 76534639315283):
@@ -408,7 +260,7 @@ async def ConoHaStart():
     
     global conoha_server_address
     global conoha_ssh_port
-    global isArkServerRun
+    global ark_server_state
         
     # 接続テスト（ssh）
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -418,6 +270,7 @@ async def ConoHaStart():
     # 接続成功
     if result == 0:
     
+        ark_server_state = ArkServerState.ARK_STARTING
         # チャンネルにメッセージ送信
         print("ARK ConoHa Server Done.")
         sendMessage = "ARKのレンタルサーバーが起動しました！\nARKを起動します..."
@@ -427,7 +280,6 @@ async def ConoHaStart():
         sshCommand = "osascript /Users/user/minecraft/Git/ArkServerStart.scpt"
         subprocess.run(sshCommand, shell=True)    
         
-        isArkServerRun = True
         ConoHaStart.stop()
         ArkConnect.start()
     
@@ -440,7 +292,7 @@ async def ConoHaStop():
     
     global conoha_server_address
     global conoha_ssh_port
-    global isArkServerRun
+    global ark_server_state
         
     # 接続テスト（ssh）
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -450,12 +302,12 @@ async def ConoHaStop():
     # 接続失敗
     if result != 0:
     
+        ark_server_state = ArkServerState.VPS_SHOTDOWN
         # チャンネルにメッセージ送信
         print("ConoHa Server Shutdown　done.")
         sendMessage = "ARKのレンタルサーバーがシャットダウンしました。"
         await send_channel.send(sendMessage)
         
-        isArkServerRun = False
         ConoHaStop.stop()
     
     # 切断
@@ -467,6 +319,7 @@ async def ArkConnect():
     
     global conoha_server_address
     global ark_rcon_port
+    global ark_server_state
     
     # 接続テスト
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -476,6 +329,7 @@ async def ArkConnect():
     # 接続成功
     if result == 0:
     
+        ark_server_state = ArkServerState.ARK_RUNNING
         # チャンネルにメッセージ送信
         print("ARK Server Done.")
         sendMessage = "ARKが起動しました！（でも30秒ぐらい待ってね）"
@@ -492,6 +346,7 @@ async def ArkDisConnect(isShutdown = 1):
     global conoha_server_address
     global ark_rcon_port
     global isArkServerShutdown
+    global ark_server_state
     
     # 接続テスト
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -505,12 +360,14 @@ async def ArkDisConnect(isShutdown = 1):
         print("ARK Server shutdown Done.")
         sendMessage = "ARKが終了しました。"
         
-        if isArkServerShutdown != 1:            
+        if isArkServerShutdown != 1:          
+            ark_server_state = ArkServerState.VPS_RUNNING  
             sendMessage += "\nレンタルサーバーのシャットダウンは行いません。"
             await send_channel.send(sendMessage)
             ArkDisConnect.stop()
             return
             
+        ark_server_state = ArkServerState.VPS_STOPPING
         sendMessage += "\nレンタルサーバーをシャットダウンします。"
         await send_channel.send(sendMessage)
         
@@ -524,5 +381,3 @@ async def ArkDisConnect(isShutdown = 1):
     
     # 切断
     mySocket.close()
-    
-client.run(os.environ.get('DISCORD_TOKEN'))
