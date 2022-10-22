@@ -25,6 +25,9 @@
     <Compile Include="DiscordPi_ARK.py" />
     <Compile Include="DiscordPi_Minecraft.py" />
     <Compile Include="DiscordPi.py" />
+    <Compile Include="DiscordPi_Satisfactory.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.10" />
