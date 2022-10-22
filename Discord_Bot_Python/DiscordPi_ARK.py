@@ -9,7 +9,6 @@ import DiscordPi
 import subprocess
 
 import socket
-import discord.ext
 from enum import IntEnum
 from discord.ext import tasks
 from mcrcon import MCRcon
