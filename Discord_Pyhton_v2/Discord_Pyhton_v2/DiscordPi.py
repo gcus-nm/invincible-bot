@@ -27,7 +27,6 @@ async def on_ready():
 
     print("Bot Start.")
     
-    
 # rebootコマンド
 @client.command()
 async def reboot(ctx):
@@ -44,6 +43,7 @@ async def reboot(ctx):
 
 client.load_extension('DiscordPi_Minecraft')
 client.load_extension('DiscordPi_ARK')
+client.load_extension('DiscordPi_Satisfactory')
 
 client.run(os.environ.get('DISCORD_TOKEN'))
 
