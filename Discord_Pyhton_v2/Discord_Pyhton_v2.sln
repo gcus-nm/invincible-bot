@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32407.337
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Discord_Pyhton_v2", "Discord_Pyhton_v2\Discord_Pyhton_v2.pyproj", "{7413B53C-97C6-4BB3-8E6C-13E3F5EEE69F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E5E9F288-D74D-4182-8E6B-E618D616E1EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7413B53C-97C6-4BB3-8E6C-13E3F5EEE69F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7413B53C-97C6-4BB3-8E6C-13E3F5EEE69F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EB23FCC1-D8EE-47C0-B70A-F4892A0F7CC8}
+	EndGlobalSection
+EndGlobal
