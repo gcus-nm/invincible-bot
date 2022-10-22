@@ -42,6 +42,11 @@ isArkServerShutdown = 1
 # 前回接続情報
 prevConnection = 76534639315283
 
+@DiscordPi.client.event
+async def on_ready():
+    #　サーバー接続チェック開始
+    SurveillanceServer.start()
+
       
 # ARK ConoHa サーバー起動コマンド
 @DiscordPi.client.command()
