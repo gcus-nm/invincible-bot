@@ -14,17 +14,6 @@ from DiscordPi_ARK import ArkCog
 from DiscordPi_Minecraft import MinecraftCog
 from DiscordPi_Satisfactory import SatisfactoryCog
 
-# アドレス
-server_address = 'gcus-MacPro.local'
-# マイクラポート
-server_port = 25024
-# rconパスワード
-rcon_password = 2126
-# rconポート
-rcon_port = 25025
-# サーバー起動状態
-isServerRun = False
-
 intents = discord.Intents.all()
 client = commands.Bot(command_prefix='#', intents=intents)
 
@@ -33,7 +22,7 @@ client = commands.Bot(command_prefix='#', intents=intents)
 async def on_ready():
 
     await client.add_cog(MinecraftCog(client))
-    await client.add_cog(ArkCog(client, server_address, server_port))
+    await client.add_cog(ArkCog(client))
     await client.add_cog(SatisfactoryCog(client))
 
     print("Bot Start.")

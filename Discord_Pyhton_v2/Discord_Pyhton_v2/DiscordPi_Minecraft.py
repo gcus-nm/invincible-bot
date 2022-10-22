@@ -14,6 +14,17 @@ class MinecraftCog(commands.Cog):
     # 起動中テキスト
     runServerText = "Minecraft Server"
 
+    # アドレス
+    server_address = 'gcus-MacPro.local'
+    # マイクラポート
+    server_port = 25024
+    # rconパスワード
+    rcon_password = 2126
+    # rconポート
+    rcon_port = 25025
+    # サーバー起動状態
+    isServerRun = False
+
     server_wait_time = 60
     
     def __init__(self, bot):
@@ -140,6 +151,54 @@ class MinecraftCog(commands.Cog):
             
         else:
             await ctx.message.channel.send("サーバーは起動していません。")
+
+
+# サーバーとの接続が行えるか（サーバーが起動しているか）指定秒おきにチェック
+@tasks.loop(seconds=5)
+async def SurveillanceServer(self):
+                    
+    # 接続テスト
+    mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    mySocket.settimeout(5)
+
+    try:
+        result = mySocket.connect_ex((self.server_address, int(self.server_port)))
+    except:
+        return
+    # 接続成功
+    if result == 0:
+        # 接続
+        self.isServerRun = True
+        
+        # Botのステータス変更
+        stat = discord.Game(name=self.runServerText)
+        await bot.change_presence(status=DiscordPi.discord.Status.online, activity=stat)
+        
+        # 前回は接続できなかった場合
+        if (prevConnection != result and prevConnection != 76534639315283):
+            print("Server Running.")
+            await self.started_channel.send("サーバーが起動しました！")
+                       
+        
+    # 接続失敗
+    else:        
+        # 接続
+        self.isServerRun = False
+        
+        # Botのステータス変更
+        stat = discord.Game(name="#start でサーバーを起動できます　")
+        await bot.change_presence(status=discord.Status.idle, activity=stat)
+        
+        # 前回は接続できていた場合
+        if (self.prevConnection != result and prevConnection != 76534639315283):
+            print("Server Stopped.")
+            await self.started_channel.send("サーバーが停止しました。")
+        
+    # 今回の接続状況を保存
+    self.prevConnection = result
+    
+    # 切断
+    mySocket.close()
 
 async def setup(bot):
     await bot.add_cog(MinecraftCog(bot))

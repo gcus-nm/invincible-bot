@@ -20,3 +20,6 @@ class SatisfactoryCog(commands.Cog):
 
         sshCommand = "osascript /Users/user/minecraft/Git/SatisfactoryStart.scpt"
         subprocess.run(sshCommand, shell=True)
+
+async def setup(bot):
+    await bot.add_cog(SatisfactoryCog(bot))

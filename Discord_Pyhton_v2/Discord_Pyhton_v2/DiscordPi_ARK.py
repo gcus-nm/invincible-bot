@@ -24,10 +24,6 @@ class ArkServerState(IntEnum):
     VPS_STOPPING = 7    # サーバー停止中
     UNKNOUN = 99        # おかしいself
 class ArkCog(commands.Cog):
-
-    server_address = None
-    server_port = None
-    started_channel = None
     
     # ARK設定
     # サーバー状態
@@ -46,13 +42,9 @@ class ArkCog(commands.Cog):
     prevConnection = 76534639315283
 
     
-    def __init__(self, bot, server_address, server_port):
+    def __init__(self, bot):
 
         self.bot = bot
-        self.server_address = server_address
-        self.server_port = server_port
-
-        ArkCog.SurveillanceServer.start(self)
           
     # ARK ConoHa サーバー起動コマンド
     @commands.command()
@@ -175,53 +167,7 @@ class ArkCog(commands.Cog):
         else:
             await ctx.message.channel.send("サーバーが起動していないので発言できませんでした。")    
                 
-    # サーバーとの接続が行えるか（サーバーが起動しているか）指定秒おきにチェック
-    @tasks.loop(seconds=5)
-    async def SurveillanceServer(self):
-                        
-        # 接続テスト
-        mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        mySocket.settimeout(5)
-
-        try:
-            result = mySocket.connect_ex((self.server_address, int(self.server_port)))
-        except:
-            return
-        # 接続成功
-        if result == 0:
-            # 接続
-            self.isServerRun = True
             
-            # Botのステータス変更
-            stat = discord.Game(name=self.runServerText)
-            await bot.change_presence(status=DiscordPi.discord.Status.online, activity=stat)
-            
-            # 前回は接続できなかった場合
-            if (prevConnection != result and prevConnection != 76534639315283):
-                print("Server Running.")
-                await self.started_channel.send("サーバーが起動しました！")
-                           
-            
-        # 接続失敗
-        else:        
-            # 接続
-            self.isServerRun = False
-            
-            # Botのステータス変更
-            stat = discord.Game(name="#start でサーバーを起動できます　")
-            await bot.change_presence(status=discord.Status.idle, activity=stat)
-            
-            # 前回は接続できていた場合
-            if (self.prevConnection != result and prevConnection != 76534639315283):
-                print("Server Stopped.")
-                await self.started_channel.send("サーバーが停止しました。")
-            
-        # 今回の接続状況を保存
-        self.prevConnection = result
-        
-        # 切断
-        mySocket.close()
-        
     
     # ARKサーバー（ConoHa）が立ったかチェック
     @tasks.loop(seconds=5)
