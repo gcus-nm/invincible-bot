@@ -36,12 +36,11 @@ async def command(ctx, *, cmd = "None"):
         return 
     
     # 送られてきたチャンネルを保存
-    global send_channel
-    send_channel = ctx.message.channel
+    DiscordPi.send_channel = ctx.message.channel
     
     # コマンドが指定されてない
     if cmd == "None":        
-        await send_channel.send("コマンドを入力してください。 （例） #command list")
+        await DiscordPi.send_channel.send("コマンドを入力してください。 （例） #command list")
         return
     
     global isServerRun
@@ -56,10 +55,10 @@ async def command(ctx, *, cmd = "None"):
         with MCRcon(str(server_address), str(rcon_password), int(rcon_port))as mcr:
             res = mcr.command(str(cmd))
         
-        await send_channel.send(res)
+        await DiscordPi.send_channel.send(res)
         
     else:
-        await send_channel.send("サーバーが起動していないのでコマンドを送信出来ませんでした。")    
+        await DiscordPi.send_channel.send("サーバーが起動していないのでコマンドを送信出来ませんでした。")    
 
 # startコマンド
 @DiscordPi.client.command()
@@ -70,14 +69,13 @@ async def start(ctx, version = "1.18.1P", ram = 12):
         return 
     
     # 送られてきたチャンネルを保存
-    global send_channel
-    send_channel = ctx.message.channel
+    DiscordPi.send_channel = ctx.message.channel
     
     global isServerRun
     global isServerStartRequest
     
     if isServerRun:
-        await send_channel.send("既にサーバーが起動しているため、起動できません。")
+        await DiscordPi.send_channel.send("既にサーバーが起動しているため、起動できません。")
         return
     
     # javaバージョン
@@ -122,7 +120,7 @@ async def start(ctx, version = "1.18.1P", ram = 12):
     
     # チャンネルにメッセージ送信
     sendMessage = versionMessage + " の起動を開始します..."
-    await send_channel.send(sendMessage)
+    await DiscordPi.send_channel.send(sendMessage)
     
     # 起動コマンドをシェルで起動
     print("Minecraft Server Start.")
@@ -140,15 +138,14 @@ async def stop(ctx):
         return 
     
     # チャンネルIDを保存
-    global send_channel
-    send_channel = ctx.message.channel
+    DiscordPi.send_channel = ctx.message.channel
     
     # サーバーが起動しているか
     global isServerRun    
     
     if isServerRun:
         print("Minecraft Server Stop.")
-        await send_channel.send("サーバーを停止します...")
+        await DiscordPi.send_channel.send("サーバーを停止します...")
         # サーバーアドレス
         global server_address
         # rconパスワード
@@ -160,4 +157,4 @@ async def stop(ctx):
             mcr.command("stop")
             
     else:
-        await send_channel.send("サーバーは起動していません。")    
+        await DiscordPi.send_channel.send("サーバーは起動していません。")    

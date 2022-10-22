@@ -31,7 +31,19 @@ async def on_ready():
     send_channel = client.get_channel(default_channel)
     print("Bot Start.")
     
-
+@client.command()
+async def test(ctx):
+        
+    # 送信者がbotである場合は弾く
+    if ctx.message.author.bot:
+        return      
+    
+    # チャンネルIDを保存
+    global send_channel
+    send_channel = ctx.message.channel
+    # チャンネルにメッセージ送信
+    print("Reboot.")
+    await send_channel.send("サーバーPCの再起動を行います。")
     
 # rebootコマンド
 @client.command()

@@ -58,14 +58,13 @@ async def arkstart(ctx):
     
     
     # チャンネルIDを保存
-    global send_channel
-    send_channel = ctx.message.channel
+    DiscordPi.send_channel = ctx.message.channel
     
     global ark_server_state
     if ark_server_state >= ArkServerState.ARK_STARTING and ark_server_state != ArkServerState.UNKNOUN:
         print("ARK was started.")
         sendMessage = "ARKはすでに開始されています。"
-        await send_channel.send(sendMessage)
+        await DiscordPi.send_channel.send(sendMessage)
         return
     
     
@@ -74,7 +73,7 @@ async def arkstart(ctx):
     
         # チャンネルにメッセージ送信
         sendMessage = "レンタルサーバーは起動しているので、ARKを開始します..."
-        await send_channel.send(sendMessage)
+        await DiscordPi.send_channel.send(sendMessage)
         
         print("ARK Server Start.")
         
@@ -88,7 +87,7 @@ async def arkstart(ctx):
     
         # チャンネルにメッセージ送信
         sendMessage = "ARKのレンタルサーバーの起動を開始します..."
-        await send_channel.send(sendMessage)
+        await DiscordPi.send_channel.send(sendMessage)
         
         print("ARK ConoHa Server Start.")
     
@@ -114,8 +113,7 @@ async def arkstop(ctx, stopTime = 60, isServerShut = 1):
         return 
     
     # チャンネルIDを保存
-    global send_channel
-    send_channel = ctx.message.channel
+    DiscordPi.send_channel = ctx.message.channel
     
     global ark_server_state
     if ark_server_state == ArkServerState.ARK_RUNNING:
@@ -125,13 +123,13 @@ async def arkstop(ctx, stopTime = 60, isServerShut = 1):
         stopMes = str(stopTime) + "秒後にARKサーバーを停止します。"
         with MCRcon(conoha_server_address, str(ark_admin_password), int(ark_rcon_port))as mcr:
             mcr.command("Broadcast Stop the server after " + str(stopTime) + " seconds.")
-        await send_channel.send(stopMes)
+        await DiscordPi.send_channel.send(stopMes)
         
         time.sleep(stopTime)
         
         with MCRcon(conoha_server_address, str(ark_admin_password), int(ark_rcon_port))as mcr:
             mcr.command("Broadcast Stop the server.")            
-        await send_channel.send("停止を開始します...")
+        await DiscordPi.send_channel.send("停止を開始します...")
         
         time.sleep(3)
         
@@ -141,7 +139,7 @@ async def arkstop(ctx, stopTime = 60, isServerShut = 1):
         ArkDisConnect.start()
         
     else:
-        await send_channel.send("ARKサーバーは起動していません。")
+        await DiscordPi.send_channel.send("ARKサーバーは起動していません。")
         
 # ARK commandコマンド
 @DiscordPi.client.command()
@@ -156,12 +154,11 @@ async def arkcommand(ctx, *, cmd = "None"):
         return 
     
     # 送られてきたチャンネルを保存
-    global send_channel
-    send_channel = ctx.message.channel
+    DiscordPi.send_channel = ctx.message.channel
     
     # コマンドが指定されてない
     if cmd == "None":        
-        await send_channel.send("コマンドを入力してください。 （例） #arkcommand DoExit")
+        await DiscordPi.send_channel.send("コマンドを入力してください。 （例） #arkcommand DoExit")
         return
         
     global ark_server_state
@@ -173,7 +170,7 @@ async def arkcommand(ctx, *, cmd = "None"):
         if cmd == "DoExit":
             ArkDisConnect.start()
     else:
-        await send_channel.send("サーバーが起動していないのでコマンドを送信出来ませんでした。")
+        await DiscordPi.send_channel.send("サーバーが起動していないのでコマンドを送信出来ませんでした。")
         
 # ARK commandコマンド
 @DiscordPi.client.command()
@@ -188,8 +185,7 @@ async def arksay(ctx, *, say = ""):
         return 
     
     # 送られてきたチャンネルを保存
-    global send_channel
-    send_channel = ctx.message.channel
+    DiscordPi.send_channel = ctx.message.channel
         
     global ark_server_state
     if ark_server_state == ArkServerState.ARK_RUNNING:
@@ -198,7 +194,7 @@ async def arksay(ctx, *, say = ""):
             mcr.command("Broadcast " + str(say))
         
     else:
-        await send_channel.send("サーバーが起動していないので発言できませんでした。")    
+        await DiscordPi.send_channel.send("サーバーが起動していないので発言できませんでした。")    
             
 # サーバーとの接続が行えるか（サーバーが起動しているか）指定秒おきにチェック
 @tasks.loop(seconds=5)
@@ -234,7 +230,7 @@ async def SurveillanceServer():
         # 前回は接続できなかった場合
         if (prevConnection != result and prevConnection != 76534639315283):
             print("Server Running.")
-            await send_channel.send("サーバーが起動しました！")
+            await DiscordPi.send_channel.send("サーバーが起動しました！")
                        
         
     # 接続失敗
@@ -249,7 +245,7 @@ async def SurveillanceServer():
         # 前回は接続できていた場合
         if (prevConnection != result and prevConnection != 76534639315283):
             print("Server Stopped.")
-            await send_channel.send("サーバーが停止しました。")
+            await DiscordPi.send_channel.send("サーバーが停止しました。")
         
     # 今回の接続状況を保存
     prevConnection = result
@@ -278,7 +274,7 @@ async def ConoHaStart():
         # チャンネルにメッセージ送信
         print("ARK ConoHa Server Done.")
         sendMessage = "ARKのレンタルサーバーが起動しました！\nARKを起動します..."
-        await send_channel.send(sendMessage)
+        await DiscordPi.send_channel.send(sendMessage)
         # sshで起動
         print("ARK Server Start.")
         sshCommand = "osascript /Users/user/minecraft/Git/ArkServerStart.scpt"
@@ -310,7 +306,7 @@ async def ConoHaStop():
         # チャンネルにメッセージ送信
         print("ConoHa Server Shutdown　done.")
         sendMessage = "ARKのレンタルサーバーがシャットダウンしました。"
-        await send_channel.send(sendMessage)
+        await DiscordPi.send_channel.send(sendMessage)
         
         ConoHaStop.stop()
     
@@ -337,7 +333,7 @@ async def ArkConnect():
         # チャンネルにメッセージ送信
         print("ARK Server Done.")
         sendMessage = "ARKが起動しました！（でも30秒ぐらい待ってね）"
-        await send_channel.send(sendMessage)
+        await DiscordPi.send_channel.send(sendMessage)
         ArkConnect.stop()
     
     # 切断
@@ -367,13 +363,13 @@ async def ArkDisConnect(isShutdown = 1):
         if isArkServerShutdown != 1:          
             ark_server_state = ArkServerState.VPS_RUNNING  
             sendMessage += "\nレンタルサーバーのシャットダウンは行いません。"
-            await send_channel.send(sendMessage)
+            await DiscordPi.send_channel.send(sendMessage)
             ArkDisConnect.stop()
             return
             
         ark_server_state = ArkServerState.VPS_STOPPING
         sendMessage += "\nレンタルサーバーをシャットダウンします。"
-        await send_channel.send(sendMessage)
+        await DiscordPi.send_channel.send(sendMessage)
         
         # VM停止API
         print("ConoHa Server Shutdown.")
