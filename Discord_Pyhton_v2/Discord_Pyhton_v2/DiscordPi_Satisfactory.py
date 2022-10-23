@@ -9,18 +9,12 @@ class SatisfactoryCog(commands.Cog):
         self.bot = bot
 
     # コマンドの大元
-    @commands.command()
-    async def factory(self, ctx, *, cmd = "None"):
-    
-        # 送信者がbotである場合は弾く
-        if ctx.message.author.bot:
-            return 
-
-        # コマンド分岐
-        if ("start" in cmd):
-            await self.start(ctx)
+    @commands.group()
+    async def factory(self, ctx):
+        pass
 
     # サーバー開始
+    @factory.command()
     async def start(self, ctx):
     
         # チャンネルにメッセージ送信
@@ -29,6 +23,7 @@ class SatisfactoryCog(commands.Cog):
 
         sshCommand = "osascript /Users/user/minecraft/Git/SatisfactoryStart.scpt"
         subprocess.run(sshCommand, shell=True)
+
 
 async def setup(bot):
     await bot.add_cog(SatisfactoryCog(bot))
