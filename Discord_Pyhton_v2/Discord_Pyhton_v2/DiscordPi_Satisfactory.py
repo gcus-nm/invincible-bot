@@ -8,13 +8,20 @@ class SatisfactoryCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    # サーバー起動
+    # コマンドの大元
     @commands.command()
-    async def factorystart(self, ctx):
+    async def factory(self, ctx, *, cmd = "None"):
     
         # 送信者がbotである場合は弾く
         if ctx.message.author.bot:
             return 
+
+        # コマンド分岐
+        if ("start" in cmd):
+            await self.start(ctx)
+
+    # サーバー開始
+    async def start(self, ctx):
     
         # チャンネルにメッセージ送信
         sendMessage = "Satisfactoryサーバーの起動を開始します..."

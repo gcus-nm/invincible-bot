@@ -46,4 +46,3 @@ client.load_extension('DiscordPi_ARK')
 client.load_extension('DiscordPi_Satisfactory')
 
 client.run(os.environ.get('DISCORD_TOKEN'))
-
