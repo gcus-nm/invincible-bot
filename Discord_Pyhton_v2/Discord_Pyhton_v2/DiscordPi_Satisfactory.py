@@ -1,6 +1,7 @@
 
 import subprocess
 import discord
+import re
 from discord.ext import tasks, commands
 
 class SatisfactoryCog(commands.Cog):
@@ -35,6 +36,10 @@ class SatisfactoryCog(commands.Cog):
         print(recieve)
         print(recieve == 'GAME')
         print(recieve == "GAME")
+        print(recieve != '')
+        print(recieve != "")
+        print(recieve != "")
+        print(re.search('GAME', recieve))
 
         if (recieve == 'GAME' and self.isStart == False):
             await ctx.message.channel.send("Satisfactoryサーバーが起動しました！")
