@@ -16,10 +16,6 @@ class SatisfactoryCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-        if (self.is_server_connected()):
-            self.state = self.FactoryServerState.RUNNING
-
-
     # サーバー疎通確認（UDP）
     def is_server_connected(self):        
         recieve = subprocess.getoutput('echo "GAME" | nc -u 192.168.1.52 8641 -w 1')
@@ -28,12 +24,10 @@ class SatisfactoryCog(commands.Cog):
     # コマンドの大元
     @commands.group()
     async def factory(self, ctx):
-
         if (self.is_server_connected()):
-            await ctx.message.channel.send("Satisfactoryサーバーは起動しています。")
-
+            self.state = self.FactoryServerState.RUNNING
         else:
-            await ctx.message.channel.send("Satisfactoryサーバーは起動していません。 \"factory start\"で起動できます。")
+            self.state = self.FactoryServerState.SHUTDOWN
 
     # サーバー開始
     @factory.command()
