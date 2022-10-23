@@ -6,7 +6,6 @@ from discord.ext import tasks, commands
 class SatisfactoryCog(commands.Cog):
 
     isStart = False
-    port = 8641
     
     def __init__(self, bot):
         self.bot = bot
@@ -31,10 +30,10 @@ class SatisfactoryCog(commands.Cog):
     # 接続チェッカー
     @tasks.loop(seconds=5)
     async def connect(self, ctx):
-        recieve = subprocess.getoutput('echo "GAME" | nc -u 192.168.1.52 %s -w 1' %self.port)
+        recieve = subprocess.getoutput('echo "GAME" | nc -u 192.168.1.52 8641 -w 1')
 
         if (recieve == "GAME" and self.isStart == False):
-            await ctx.message.channel.send("Satisfactoryサーバーが起動しました！（ポート：%s）" %self.port)
+            await ctx.message.channel.send("Satisfactoryサーバーが起動しました！")
             isStart = True
 
         elif (recieve == "" and self.isStart == True):
