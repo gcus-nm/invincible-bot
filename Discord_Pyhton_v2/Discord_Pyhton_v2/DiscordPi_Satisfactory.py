@@ -67,10 +67,13 @@ class SatisfactoryCog(commands.Cog):
         if (connect == True and self.state != self.FactoryServerState.RUNNING):
             await ctx.message.channel.send("Satisfactoryサーバーが起動しました！")
             self.state = self.FactoryServerState.RUNNING
+            await self.bot.change_presence(status=discord.Status.online, activity=discord.Game(name="Satisfactory"))
 
         elif (connect == False and self.state == self.FactoryServerState.RUNNING):
             await ctx.message.channel.send("Satisfactoryサーバーが停止しました。")
             self.state = self.FactoryServerState.SHUTDOWN            
+            await self.bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="なんか欲しい機能あったら言ってください（作るとは言っていない）"))
+
             sshCommand = "sshpass -p Smashsmash12 ssh gcus_nm12@192.168.1.52 -p 22 taskkill -im UE4Server-Win64-Shipping.exe /F"
             subprocess.run(sshCommand, shell=True)
             self.connect.stop()
