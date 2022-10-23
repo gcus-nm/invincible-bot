@@ -65,7 +65,9 @@ class SatisfactoryCog(commands.Cog):
 
         elif (connect == False and self.state == self.FactoryServerState.RUNNING):
             await ctx.message.channel.send("Satisfactoryサーバーが停止しました。")
-            self.state = self.FactoryServerState.SHUTDOWN
+            self.state = self.FactoryServerState.SHUTDOWN            
+            sshCommand = "sshpass -p Smashsmash12 ssh gcus_nm12@192.168.1.52 -p 22 taskkill -im UE4Server-Win64-Shipping.exe /F"
+            subprocess.run(sshCommand, shell=True)
             self.connect.stop()
 
 
