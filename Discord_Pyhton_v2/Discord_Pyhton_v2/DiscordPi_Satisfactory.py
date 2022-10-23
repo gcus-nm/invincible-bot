@@ -32,7 +32,11 @@ class SatisfactoryCog(commands.Cog):
     async def connect(self, ctx):
         recieve = subprocess.getoutput('echo "GAME" | nc -u 192.168.1.52 8641 -w 1')
 
-        if (recieve == "GAME" and self.isStart == False):
+        print(recieve)
+        print(recieve == 'GAME')
+        print(recieve == "GAME")
+
+        if (recieve == 'GAME' and self.isStart == False):
             await ctx.message.channel.send("Satisfactoryサーバーが起動しました！")
             isStart = True
 
