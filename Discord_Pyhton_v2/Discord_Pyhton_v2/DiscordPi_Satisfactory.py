@@ -28,8 +28,11 @@ class SatisfactoryCog(commands.Cog):
 
             if (self.is_server_connected()):
                 self.state = self.FactoryServerState.RUNNING
+                await self.bot.change_presence(status=discord.Status.online, activity=discord.Game(name="Satisfactory"))
+
             else:
                 self.state = self.FactoryServerState.SHUTDOWN
+                await self.bot.change_presence(status=discord.Status.idle, activity=discord.Game(name="なんか欲しい機能あったら言ってください（作るとは言っていない）"))
 
     # サーバー開始
     @factory.command()

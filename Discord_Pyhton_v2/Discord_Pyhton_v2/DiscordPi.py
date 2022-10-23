@@ -25,6 +25,8 @@ async def on_ready():
     await client.add_cog(ArkCog(client))
     await client.add_cog(SatisfactoryCog(client))
 
+    await client.change_presence(status=discord.Status.idle, activity=discord.Game(name="なんか欲しい機能あったら言ってください（作るとは言っていない）"))
+
     print("Bot Start.")
     
 # rebootコマンド

@@ -185,10 +185,6 @@ async def SurveillanceServer(self):
         # 接続
         self.isServerRun = False
         
-        # Botのステータス変更
-        stat = discord.Game(name="#start でサーバーを起動できます　")
-        await bot.change_presence(status=discord.Status.idle, activity=stat)
-        
         # 前回は接続できていた場合
         if (self.prevConnection != result and prevConnection != 76534639315283):
             print("Server Stopped.")
