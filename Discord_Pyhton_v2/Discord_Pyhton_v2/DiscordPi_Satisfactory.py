@@ -59,11 +59,11 @@ class SatisfactoryCog(commands.Cog):
     async def connect(self, ctx):
         connect = self.is_server_connected()
 
-        if (connect == True and self.isStart == False):
+        if (connect == True and self.state != self.FactoryServerState.RUNNING):
             await ctx.message.channel.send("Satisfactoryサーバーが起動しました！")
             self.state = self.FactoryServerState.RUNNING
 
-        elif (connect == False and self.isStart == True):
+        elif (connect == False and self.state == self.FactoryServerState.RUNNING):
             await ctx.message.channel.send("Satisfactoryサーバーが停止しました。")
             self.state = self.FactoryServerState.SHUTDOWN
             self.connect.stop()
