@@ -24,10 +24,12 @@ class SatisfactoryCog(commands.Cog):
     # コマンドの大元
     @commands.group()
     async def factory(self, ctx):
-        if (self.is_server_connected()):
-            self.state = self.FactoryServerState.RUNNING
-        else:
-            self.state = self.FactoryServerState.SHUTDOWN
+        if (self.state != self.FactoryServerState.STARTING):
+
+            if (self.is_server_connected()):
+                self.state = self.FactoryServerState.RUNNING
+            else:
+                self.state = self.FactoryServerState.SHUTDOWN
 
     # サーバー開始
     @factory.command()
