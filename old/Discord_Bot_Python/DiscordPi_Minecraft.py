@@ -117,6 +117,12 @@ async def start(ctx, version = "1.18.1P", ram = 12):
         versionMessage = "1.19"
         runServerText = "1.19"
         javaVer = "17"
+
+    elif (version == "1.19.3"):
+        version = "1.19.3"
+        versionMessage = "1.19.3"
+        runServerText = "1.19.3"
+        javaVer = "17"
     
     # チャンネルにメッセージ送信
     sendMessage = versionMessage + " の起動を開始します..."
