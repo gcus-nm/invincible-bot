@@ -23,6 +23,10 @@ class MinecraftCog(commands.Cog):
     # rconポート
     rcon_port = 25025
 
+    runServerText = ""
+
+    isServerRun = False
+
     server_wait_time = 60
     
     def __init__(self, bot):
