@@ -110,6 +110,12 @@ class MinecraftCog(commands.Cog):
             versionMessage = "1.19"
             self.runServerText = "1.19"
             javaVer = "17"
+
+        elif (version == "1.19.3"):
+            version = "1.19.3"
+            versionMessage = "1.19.3"
+            self.runServerText = "1.19.3"
+            javaVer = "17"
     
         # チャンネルにメッセージ送信
         sendMessage = versionMessage + " の起動を開始します..."
