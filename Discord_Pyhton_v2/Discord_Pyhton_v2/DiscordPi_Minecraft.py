@@ -62,7 +62,7 @@ class MinecraftCog(commands.Cog):
 
     # startコマンド
     @commands.command()
-    async def start(self, ctx, version = "1.18.1P", ram = 12):
+    async def start(self, ctx, version = "1.19.3", ram = 12):
     
         # 送信者がbotである場合は弾く
         if ctx.message.author.bot:
