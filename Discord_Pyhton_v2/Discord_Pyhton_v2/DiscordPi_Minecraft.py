@@ -22,8 +22,6 @@ class MinecraftCog(commands.Cog):
     rcon_password = 2126
     # rconポート
     rcon_port = 25025
-    # サーバー起動状態
-    isServerRun = False
 
     server_wait_time = 60
     
@@ -42,8 +40,7 @@ class MinecraftCog(commands.Cog):
             await ctx.message.channel.send("コマンドを入力してください。 （例） #command list")
             return
     
-        global isServerRun
-        if isServerRun:    
+        if self.isServerRun:    
             # サーバーアドレス
             global server_address
             # rconパスワード
@@ -67,10 +64,9 @@ class MinecraftCog(commands.Cog):
         if ctx.message.author.bot:
             return 
     
-        global isServerRun
         global isServerStartRequest
     
-        if isServerRun:
+        if self.isServerRun:
             await ctx.message.channel.send("既にサーバーが起動しているため、起動できません。")
             return
     
@@ -80,15 +76,12 @@ class MinecraftCog(commands.Cog):
         # サーバーバージョンメッセージ
         versionMessage = "1.18.1"
     
-        # Discordのステータスに表示する文字列
-        global runServerText
-    
         # 起動鯖のバージョン指定
         if  (version == "1.18.1" or version == "1.18.1P"):
         
             version = "1.18.1P"
             versionMessage = "1.18.1 バニラサーバー"
-            runServerText = "1.18.1 バニラサーバー "
+            self.runServerText = "1.18.1 バニラサーバー "
             javaVer = "17"
         
         elif (version == "1.12.2Mohist" or version == "takumi" or
@@ -96,7 +89,7 @@ class MinecraftCog(commands.Cog):
         
             version = "1.12.2Mohist"
             versionMessage = "1.12.2 匠サーバー"
-            runServerText = "1.12.2 匠サーバー "
+            self.runServerText = "1.12.2 匠サーバー "
             javaVer = "8"
         
         elif (version == "1.12.2SkyFactory4" or
@@ -105,13 +98,13 @@ class MinecraftCog(commands.Cog):
                 
             version = "1.12.2SkyFactory4"
             versionMessage = "1.12.2 SkyFactory 4"
-            runServerText = "1.12.2 SkyFactory 4 "
+            self.runServerText = "1.12.2 SkyFactory 4 "
             javaVer = "8"
 
         elif (version == "1.19"):
             version = "1.19"
             versionMessage = "1.19"
-            runServerText = "1.19"
+            self.runServerText = "1.19"
             javaVer = "17"
     
         # チャンネルにメッセージ送信
@@ -133,10 +126,7 @@ class MinecraftCog(commands.Cog):
         if ctx.message.author.bot:
             return 
     
-        # サーバーが起動しているか
-        global isServerRun    
-    
-        if isServerRun:
+        if self.isServerRun:
             print("Minecraft Server Stop.")
             await ctx.message.channel.send("サーバーを停止します...")
             # サーバーアドレス
