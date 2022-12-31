@@ -116,6 +116,12 @@ class MinecraftCog(commands.Cog):
             versionMessage = "1.19.3"
             self.runServerText = "1.19.3"
             javaVer = "17"
+
+        elif (version == "1"):
+            version = "1.12.2Kumada"
+            versionMessage = "1.12.2"
+            self.runServerText = "1.12.2"
+            javaVer = "8"
     
         # チャンネルにメッセージ送信
         sendMessage = versionMessage + " の起動を開始します..."
