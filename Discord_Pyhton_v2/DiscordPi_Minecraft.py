@@ -139,6 +139,8 @@ class MinecraftCog(commands.Cog):
         print("Minecraft Server Start.")
         command = "osascript /Users/user/minecraft/Git/BuildMac.scpt";
         command = command + " " + str(version) + " " + str(ram) + " " + str(javaVer)
+
+        self.SurveillanceServer.start(self)
     
         subprocess.run(command, shell=True)
     
