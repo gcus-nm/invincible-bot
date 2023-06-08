@@ -156,7 +156,7 @@ class MinecraftCog(commands.Cog):
             # rconパスワード
             global rcon_password
             # rconポート
-            global rcon_port       
+            global rcon_port
         
             with MCRcon(str(server_address), str(rcon_password), int(rcon_port))as mcr:
                 mcr.command("stop")
@@ -176,7 +176,9 @@ async def SurveillanceServer(self):
     try:
         result = mySocket.connect_ex((self.server_address, int(self.server_port)))
     except:
+        print("error connection")
         return
+
     # 接続成功
     if result == 0:
         # 接続
