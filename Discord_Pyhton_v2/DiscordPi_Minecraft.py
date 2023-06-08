@@ -62,7 +62,7 @@ class MinecraftCog(commands.Cog):
 
     # startコマンド
     @commands.command()
-    async def start(self, ctx, version = "1.19.3", ram = 12):
+    async def start(self, ctx, version = "1.20.0", ram = 12):
     
         # 送信者がbotである場合は弾く
         if ctx.message.author.bot:
@@ -78,7 +78,7 @@ class MinecraftCog(commands.Cog):
         javaVer = "17"
     
         # サーバーバージョンメッセージ
-        versionMessage = "1.18.1"
+        versionMessage = version
     
         # 起動鯖のバージョン指定
         if  (version == "1.18.1" or version == "1.18.1P"):
