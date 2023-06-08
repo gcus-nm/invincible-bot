@@ -6,6 +6,8 @@ Created on Sat Oct 22 17:52:13 2022
 """
 
 import subprocess
+import socket
+import discord
 from discord.ext import tasks, commands
 from mcrcon import MCRcon
 
@@ -28,6 +30,10 @@ class MinecraftCog(commands.Cog):
     isServerRun = False
 
     server_wait_time = 60
+
+    started_channel = 0
+
+    prevConnection = 76534639315283
     
     def __init__(self, bot):
         self.bot = bot
@@ -44,15 +50,9 @@ class MinecraftCog(commands.Cog):
             await ctx.message.channel.send("コマンドを入力してください。 （例） #command list")
             return
     
-        if self.isServerRun:    
-            # サーバーアドレス
-            global server_address
-            # rconパスワード
-            global rcon_password
-            # rconポート
-            global rcon_port       
-        
-            with MCRcon(str(server_address), str(rcon_password), int(rcon_port))as mcr:
+        if self.isServerRun:
+
+            with MCRcon(str(self.server_address), str(self.rcon_password), int(self.rcon_port))as mcr:
                 res = mcr.command(str(cmd))
         
             await ctx.message.channel.send(res)
@@ -137,6 +137,10 @@ class MinecraftCog(commands.Cog):
         print("Minecraft Server Start.")
         command = "osascript /Users/user/minecraft/Git/BuildMac.scpt";
         command = command + " " + str(version) + " " + str(ram) + " " + str(javaVer)
+
+        self.started_channel = ctx.message.channel
+
+        self.SurveillanceServer.start()
     
         subprocess.run(command, shell=True)
     
@@ -151,62 +155,56 @@ class MinecraftCog(commands.Cog):
         if self.isServerRun:
             print("Minecraft Server Stop.")
             await ctx.message.channel.send("サーバーを停止します...")
-            # サーバーアドレス
-            global server_address
-            # rconパスワード
-            global rcon_password
-            # rconポート
-            global rcon_port       
         
-            with MCRcon(str(server_address), str(rcon_password), int(rcon_port))as mcr:
+            with MCRcon(str(self.server_address), str(self.rcon_password), int(self.rcon_port))as mcr:
                 mcr.command("stop")
             
         else:
             await ctx.message.channel.send("サーバーは起動していません。")
 
 
-# サーバーとの接続が行えるか（サーバーが起動しているか）指定秒おきにチェック
-@tasks.loop(seconds=5)
-async def SurveillanceServer(self):
+    # サーバーとの接続が行えるか（サーバーが起動しているか）指定秒おきにチェック
+    @tasks.loop(seconds=5)
+    async def SurveillanceServer(self):
                     
-    # 接続テスト
-    mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    mySocket.settimeout(5)
+        # 接続テスト
+        mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        mySocket.settimeout(5)
 
-    try:
-        result = mySocket.connect_ex((self.server_address, int(self.server_port)))
-    except:
-        return
-    # 接続成功
-    if result == 0:
-        # 接続
-        self.isServerRun = True
+        try:
+            result = mySocket.connect_ex((self.server_address, int(self.server_port)))
+        except:
+            print("error connection")
+            return
+
+        # 接続成功
+        if result == 0:
+            # 接続
+            self.isServerRun = True
         
-        # Botのステータス変更
-        stat = discord.Game(name=self.runServerText)
-        await bot.change_presence(status=DiscordPi.discord.Status.online, activity=stat)
+            # Botのステータス変更
+            stat = discord.Game(name=self.runServerText)
         
-        # 前回は接続できなかった場合
-        if (prevConnection != result and prevConnection != 76534639315283):
-            print("Server Running.")
-            await self.started_channel.send("サーバーが起動しました！")
-                       
+            # 前回は接続できなかった場合
+            if (self.prevConnection != result and self.prevConnection != 76534639315283):
+                print("Server Running.")
+                await self.started_channel.send("サーバーが起動しました！")
         
-    # 接続失敗
-    else:        
-        # 接続
-        self.isServerRun = False
+        # 接続失敗
+        else:        
+            # 接続
+            self.isServerRun = False
         
-        # 前回は接続できていた場合
-        if (self.prevConnection != result and prevConnection != 76534639315283):
-            print("Server Stopped.")
-            await self.started_channel.send("サーバーが停止しました。")
+            # 前回は接続できていた場合
+            if (self.prevConnection != result and self.prevConnection != 76534639315283):
+                print("Server Stopped.")
+                await self.started_channel.send("サーバーが停止しました。")
         
-    # 今回の接続状況を保存
-    self.prevConnection = result
+        # 今回の接続状況を保存
+        self.prevConnection = result
     
-    # 切断
-    mySocket.close()
+        # 切断
+        mySocket.close()
 
-async def setup(bot):
-    await bot.add_cog(MinecraftCog(bot))
+    async def setup(bot):
+        await bot.add_cog(MinecraftCog(bot))
