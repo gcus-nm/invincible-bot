@@ -175,8 +175,6 @@ async def SurveillanceServer(self):
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     mySocket.settimeout(5)
 
-    global prevConnection
-
     try:
         result = mySocket.connect_ex((self.server_address, int(self.server_port)))
     except:
@@ -193,7 +191,7 @@ async def SurveillanceServer(self):
         await bot.change_presence(status=DiscordPi.discord.Status.online, activity=stat)
         
         # 前回は接続できなかった場合
-        if (prevConnection != result and prevConnection != 76534639315283):
+        if (self.prevConnection != result and self.prevConnection != 76534639315283):
             print("Server Running.")
             await self.started_channel.send("サーバーが起動しました！")
                        
@@ -204,7 +202,7 @@ async def SurveillanceServer(self):
         self.isServerRun = False
         
         # 前回は接続できていた場合
-        if (self.prevConnection != result and prevConnection != 76534639315283):
+        if (self.prevConnection != result and self.prevConnection != 76534639315283):
             print("Server Stopped.")
             await self.started_channel.send("サーバーが停止しました。")
         
