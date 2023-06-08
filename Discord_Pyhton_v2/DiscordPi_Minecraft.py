@@ -31,6 +31,8 @@ class MinecraftCog(commands.Cog):
 
     server_wait_time = 60
 
+    started_channel = 0
+
     prevConnection = 76534639315283
     
     def __init__(self, bot):
@@ -141,6 +143,8 @@ class MinecraftCog(commands.Cog):
         print("Minecraft Server Start.")
         command = "osascript /Users/user/minecraft/Git/BuildMac.scpt";
         command = command + " " + str(version) + " " + str(ram) + " " + str(javaVer)
+
+        self.started_channel = ctx.message.channel
 
         self.SurveillanceServer.start()
     
