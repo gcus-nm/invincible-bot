@@ -6,6 +6,7 @@ Created on Sat Oct 22 17:52:13 2022
 """
 
 import subprocess
+import socket
 from discord.ext import tasks, commands
 from mcrcon import MCRcon
 
@@ -140,7 +141,7 @@ class MinecraftCog(commands.Cog):
         command = "osascript /Users/user/minecraft/Git/BuildMac.scpt";
         command = command + " " + str(version) + " " + str(ram) + " " + str(javaVer)
 
-        SurveillanceServer.start(self)
+        self.SurveillanceServer.start()
     
         subprocess.run(command, shell=True)
     
