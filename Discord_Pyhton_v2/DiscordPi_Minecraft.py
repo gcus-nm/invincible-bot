@@ -50,15 +50,9 @@ class MinecraftCog(commands.Cog):
             await ctx.message.channel.send("コマンドを入力してください。 （例） #command list")
             return
     
-        if self.isServerRun:    
-            # サーバーアドレス
-            global server_address
-            # rconパスワード
-            global rcon_password
-            # rconポート
-            global rcon_port       
-        
-            with MCRcon(str(server_address), str(rcon_password), int(rcon_port))as mcr:
+        if self.isServerRun:
+
+            with MCRcon(str(self.server_address), str(self.rcon_password), int(self.rcon_port))as mcr:
                 res = mcr.command(str(cmd))
         
             await ctx.message.channel.send(res)
@@ -195,7 +189,6 @@ class MinecraftCog(commands.Cog):
             if (self.prevConnection != result and self.prevConnection != 76534639315283):
                 print("Server Running.")
                 await self.started_channel.send("サーバーが起動しました！")
-                       
         
         # 接続失敗
         else:        
