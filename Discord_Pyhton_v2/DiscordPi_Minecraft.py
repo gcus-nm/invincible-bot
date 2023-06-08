@@ -28,6 +28,8 @@ class MinecraftCog(commands.Cog):
     isServerRun = False
 
     server_wait_time = 60
+
+    prevConnection = 76534639315283
     
     def __init__(self, bot):
         self.bot = bot
@@ -172,6 +174,8 @@ async def SurveillanceServer(self):
     # 接続テスト
     mySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     mySocket.settimeout(5)
+
+    global prevConnection
 
     try:
         result = mySocket.connect_ex((self.server_address, int(self.server_port)))
