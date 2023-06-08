@@ -140,7 +140,7 @@ class MinecraftCog(commands.Cog):
         command = "osascript /Users/user/minecraft/Git/BuildMac.scpt";
         command = command + " " + str(version) + " " + str(ram) + " " + str(javaVer)
 
-        self.SurveillanceServer.start(self)
+        self.SurveillanceServer.start()
     
         subprocess.run(command, shell=True)
     
