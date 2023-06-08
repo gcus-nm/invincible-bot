@@ -8,6 +8,7 @@ Created on Sat Oct 22 17:52:13 2022
 import subprocess
 import socket
 import discord
+import DiscordPi
 from discord.ext import tasks, commands
 from mcrcon import MCRcon
 
