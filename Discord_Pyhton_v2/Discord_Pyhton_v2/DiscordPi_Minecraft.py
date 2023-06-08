@@ -115,6 +115,12 @@ class MinecraftCog(commands.Cog):
             version = "1.19.3"
             versionMessage = "1.19.3"
             self.runServerText = "1.19.3"
+            javaVer = "17" 
+            
+        elif (version == "1.20.0"):
+            version = "1.20.0"
+            versionMessage = "1.20.0"
+            self.runServerText = "1.20.0"
             javaVer = "17"
 
         elif (version == "1"):
