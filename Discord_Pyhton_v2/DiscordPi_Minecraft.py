@@ -192,7 +192,7 @@ class MinecraftCog(commands.Cog):
         
             # Botのステータス変更
             stat = discord.Game(name=self.runServerText)
-            await bot.change_presence(status=DiscordPi.discord.Status.online, activity=stat)
+            await self.bot.change_presence(status=DiscordPi.discord.Status.online, activity=stat)
         
             # 前回は接続できなかった場合
             if (self.prevConnection != result and self.prevConnection != 76534639315283):
