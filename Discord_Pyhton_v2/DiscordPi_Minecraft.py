@@ -158,6 +158,7 @@ class MinecraftCog(commands.Cog):
         
             with MCRcon(str(self.server_address), str(self.rcon_password), int(self.rcon_port))as mcr:
                 mcr.command("stop")
+                self.SurveillanceServer.stop()
             
         else:
             await ctx.message.channel.send("サーバーは起動していません。")
