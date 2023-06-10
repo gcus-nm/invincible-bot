@@ -57,9 +57,17 @@ namespace DiscordBotConsole
 		/// <returns></returns>
 		public static Process ShellStartForMac(string command)
 		{
-			var terminalPath = "/Applications/Utilities/Terminal.app/Contents/MacOS/Terminal";
+			var shell = new ProcessStartInfo()
+			{
+				FileName = "osascript",
+				Arguments = $"-e 'tell application \"Terminal\" to activate' -e 'tell application \"Terminal\" to do script \"{command}\"'",
 
-			var shell = new ProcessStartInfo(terminalPath, command);
+				UseShellExecute = true,
+				CreateNoWindow = false,
+				Verb = "runas",
+				RedirectStandardOutput = false,
+				RedirectStandardInput = false,
+			};
 
 			return Process.Start(shell);
 		}

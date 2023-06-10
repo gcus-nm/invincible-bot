@@ -39,7 +39,7 @@ namespace DiscordBotConsole.Minecraft
 
 			await ReplyAsync($"{info.ServerFriendlyName} の起動を開始します...");
 
-			BotUtility.ShellStartForEnvironment($"osascript /Users/user/minecraft/Git/BuildMac.scpt {serverVersion} {useRam} {info.JavaVersion}");
+			BotUtility.ShellStartForEnvironment($"bash /Users/user/minecraft/Git/build.sh {serverVersion} {useRam} {info.JavaVersion}");
 		}
 	}
 }
