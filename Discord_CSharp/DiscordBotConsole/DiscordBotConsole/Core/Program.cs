@@ -17,6 +17,8 @@ namespace DiscordBotConsole.Core
 		public static CommandService BotCommandService { get; private set; }
 		public static ServiceProvider BotServices { get; private set; }
 
+		public static IMessageChannel ResentMessageChannel { get; private set; }
+
 		private static void Main(string[] args) => new Program().MainAsync().GetAwaiter().GetResult();
 
 		public async Task MainAsync()
@@ -62,6 +64,8 @@ namespace DiscordBotConsole.Core
 
 			var context = new CommandContext(BotClient, userMessage);
 			var command = await BotCommandService.ExecuteAsync(context, index, BotServices);
+
+			ResentMessageChannel = context.Channel;
 
 			if (!command.IsSuccess)
 			{

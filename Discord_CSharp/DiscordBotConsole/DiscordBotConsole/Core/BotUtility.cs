@@ -1,10 +1,17 @@
 ﻿using Discord.WebSocket;
+using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace DiscordBotConsole
 {
 	public static class BotUtility
 	{
+		/// <summary>
+		/// メッセージが有効かどうか
+		/// </summary>
+		/// <param name="message"></param>
+		/// <returns></returns>
 		public static bool IsValidMessage(SocketMessage message)
 		{
 			if (message == null)
@@ -20,6 +27,11 @@ namespace DiscordBotConsole
 			return true;
 		}
 
+		/// <summary>
+		/// 環境によって自動的にShell実行を切り替える
+		/// </summary>
+		/// <param name="shellFilePath"></param>
+		/// <returns></returns>
 		public static Process ShellStartForEnvironment(string shellFilePath)
 		{
 			if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
@@ -37,7 +49,7 @@ namespace DiscordBotConsole
 		}
 
 		/// <summary>
-		/// Windowsでshを実行
+		/// WindowsでShell実行
 		/// </summary>
 		/// <param name="shellFilePath"></param>
 		/// <returns></returns>
@@ -51,7 +63,7 @@ namespace DiscordBotConsole
 		}
 
 		/// <summary>
-		/// macOSでshを実行
+		/// macOSでShell実行
 		/// </summary>
 		/// <param name="shellFilePath"></param>
 		/// <returns></returns>
@@ -70,6 +82,29 @@ namespace DiscordBotConsole
 			};
 
 			return Process.Start(shell);
+		}
+
+		/// <summary>
+		/// 条件がTrueの間、待ち続ける
+		/// </summary>
+		/// <param name="status">whileループに利用する条件</param>
+		/// <param name="timeout">タイムアウト時間</param>
+		/// <param name="checkInterval">条件式の確認間隔</param>
+		/// <returns></returns>
+		public static async Task WaitWhile(Func<bool> status, int timeout = 30000, int checkInterval = 100)
+		{
+			int loopLimit = timeout / checkInterval;
+			for (int i = 0; i < loopLimit; ++i)
+			{
+				if (!status.Invoke())
+				{
+					return;
+				}
+
+				await Task.Delay(100);
+			}
+
+			throw new TimeoutException();
 		}
 	}
 }
