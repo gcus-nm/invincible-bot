@@ -92,8 +92,8 @@ namespace DiscordBotConsole.Minecraft
 					}
 					serverList.Append($"{server.BuildServerTexts[j]}");
 				}
+				serverList.AppendLine();
 			}
-			serverList.AppendLine();
 
 			await ReplyAsync(serverList.ToString());
 		}
