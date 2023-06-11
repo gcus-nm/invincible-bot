@@ -1,8 +1,10 @@
 #! /bin/bash
 
-ram=$1
-version=$2
+version=$1
+ram=$2
 javaVer=$3
+
+# Build
 backupFolder="/Volumes/Data_1T/minecraft/BackUps/${version}"
 minecraftDir="/Users/user/minecraft/servers/${version}"
 
@@ -62,6 +64,7 @@ tar -zcvf minecraft_${version}_${FolderDate}.tar.gz $minecraftDir
 # rsync -av --progress minecraft_${version}_${FolderDate}.tar.gz /Volumes/gcus_nm/minecraft_Backup/${version}/
 ########################################################
 
-echo
-read -p "Exit to press Enter."
+# echo
+# read -p "Exit to press Enter."
 cd
+
