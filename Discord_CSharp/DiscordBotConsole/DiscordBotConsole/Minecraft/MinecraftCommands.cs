@@ -291,7 +291,7 @@ namespace DiscordBotConsole.Minecraft
 					// サーバーへ接続開始
 					if (await Task.WhenAny(connectTask, Task.Delay(timeout)) != connectTask)
 					{
-						throw new SocketException();
+						throw new TimeoutException($"{timeout}ms以内に接続できませんでした。");
 					}
 
 					return true;
@@ -299,12 +299,17 @@ namespace DiscordBotConsole.Minecraft
 			}
 			catch (SocketException socket)
 			{
-				Console.WriteLine(socket.ToString());
+				Console.WriteLine($"ハンドリングしたSocketException\n----------\n{socket}\n----------\n");
+				return false;
+			}
+			catch (TimeoutException time)
+			{
+				Console.WriteLine($"ハンドリングしたSocketException\n----------\n{time}\n----------\n");
 				return false;
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.ToString());
+				Console.WriteLine($"キャッチした例外（未ハンドリング）\n----------\n{ex}\n----------\n");
 				throw ex;
 			}
 		}
