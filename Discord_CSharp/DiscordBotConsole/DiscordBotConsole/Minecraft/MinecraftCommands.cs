@@ -94,8 +94,6 @@ namespace DiscordBotConsole.Minecraft
 			{
 				await ReplyAsync("時間内にサーバーを起動できませんでした。");
 			}
-
-			await ServerSurveillance(ReplyAsync("サーバーが停止しました。"));
 		}
 
 		/// <summary>
@@ -304,7 +302,7 @@ namespace DiscordBotConsole.Minecraft
 			}
 			catch (TimeoutException time)
 			{
-				Console.WriteLine($"ハンドリングしたSocketException\n----------\n{time}\n----------\n");
+				Console.WriteLine($"ハンドリングしたTimeoutException\n----------\n{time}\n----------\n");
 				return false;
 			}
 			catch (Exception ex)
