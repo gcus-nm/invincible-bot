@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DiscordBotConsole
@@ -130,7 +129,6 @@ namespace DiscordBotConsole
 				Verb = "runas",
 				RedirectStandardOutput = true,
 				RedirectStandardInput = true,
-				StandardOutputEncoding = Encoding.UTF8,
 			};
 
 			return Process.Start(shell);
