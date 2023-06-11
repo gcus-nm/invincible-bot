@@ -114,7 +114,7 @@ namespace DiscordBotConsole.Minecraft
 		/// <returns></returns>
 		[Command("command")]
 		[Alias("cmd")]
-		public async Task SendCommand(string command)
+		public async Task SendCommand(string command, params string[] args)
 		{
 			if (string.IsNullOrEmpty(command))
 			{
@@ -125,19 +125,24 @@ namespace DiscordBotConsole.Minecraft
 
 			var connection = new RCON(serveraddress, RCON_PORT, RCON_PASSWORD);
 
-			var connectTask = connection.SendCommandAsync(command);
+			StringBuilder commandBuilder = new StringBuilder(command);
+			for (int i = 0; i < args.Length; ++i)
+			{
+				commandBuilder.Append($" {args[i]}");
+			}
 
-			string result = null;
+			var connectTask = connection.SendCommandAsync(commandBuilder.ToString());
 
 			// サーバーへ接続開始
 			if (await Task.WhenAny(connectTask, Task.Delay(1000)) != connectTask)
 			{
 				await ReplyAsync("コマンドを送信できませんでした。");
+				return;
 			}
 
-			result = await connectTask;
-			Console.WriteLine(result);
-			await ReplyAsync(result);
+			string result = await connectTask;
+			Console.WriteLine($"コマンド結果：{result}");
+			await ReplyAsync($"コマンド結果：{result}");
 		}
 		
 		/// <summary>
