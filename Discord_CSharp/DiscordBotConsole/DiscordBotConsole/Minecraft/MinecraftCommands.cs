@@ -1,7 +1,9 @@
-﻿using Discord.Commands;
+﻿using CoreRCON;
+using Discord.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -86,12 +88,53 @@ namespace DiscordBotConsole.Minecraft
 				await ReplyAsync("時間内にサーバーを起動できませんでした。");
 			}
 		}
+
+		/// <summary>
+		/// サーバーを停止する
+		/// </summary>
+		/// <returns></returns>
+		[Command("stop")]
+		public async Task StopServer()
+		{
+			if (!await IsConnetcionServer())
+			{
+				await ReplyAsync("サーバーは起動していません。");
+				return;
+			}
+
+			await SendCommand("stop");
+		}
+
+		/// <summary>
+		/// rconでコマンド送信する
+		/// </summary>
+		/// <param name="command"></param>
+		/// <param name="commandArgs"></param>
+		/// <returns></returns>
+		[Command("command")]
+		[Alias("cmd")]
+		public async Task SendCommand(string command)
+		{
+			if (string.IsNullOrEmpty(command))
+			{
+				await ReplyAsync("コマンドを入力してください。");
+			}
+
+			var serveraddress = IPAddress.Parse("127.0.0.1");
+
+			var connection = new RCON(serveraddress, RCON_PORT, RCON_PASSWORD);
+
+			var result = await connection.SendCommandAsync(command);
+
+			Console.WriteLine(result);
+			await ReplyAsync(result);
+		}
 		
 		/// <summary>
 		/// 起動できるサーバーの一覧を表示する
 		/// </summary>
 		/// <returns></returns>
-		[Command("ServerList")]
+		[Command("serverlist")]
 		[Alias("list")]
 		public async Task DisplayServerList()
 		{
