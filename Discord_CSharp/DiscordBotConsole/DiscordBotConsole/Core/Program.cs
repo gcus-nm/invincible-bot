@@ -3,14 +3,16 @@ using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DiscordBotConsole.Core
 {
 	class Program
 	{
-		private const string BOT_TOKEN = "MTExNjgyMDg0NjY3ODM4MDYxNA.GrWmIL.9OXYLzlQW6eo7qAQartTu-ZVHUi0zyBO8Lwpi0";
+		private const string BOT_TOKEN_FILENAME = "../Token.txt";
 		private const ulong BOT_CLIENT_ID = 1116820846678380614;
 
 		public static DiscordSocketClient BotClient { get; private set; }
@@ -34,11 +36,30 @@ namespace DiscordBotConsole.Core
 
 			BotClient.MessageReceived += OnRecievedMessage;
 
-			await BotCommandService.AddModulesAsync(Assembly.GetEntryAssembly(), BotServices);
-			await BotClient.LoginAsync(TokenType.Bot, BOT_TOKEN);
-			await BotClient.StartAsync();
+			try
+			{
+				string botToken = "";
+				using (StreamReader read = new StreamReader(BOT_TOKEN_FILENAME, Encoding.UTF8))
+				{
+					botToken = read.ReadLine();
+				}
 
-			await Task.Delay(-1);
+				if (string.IsNullOrEmpty(botToken))
+				{
+					Console.WriteLine("トークン取得失敗");
+					throw new InvalidOperationException();
+				}
+
+				await BotCommandService.AddModulesAsync(Assembly.GetEntryAssembly(), BotServices);
+				await BotClient.LoginAsync(TokenType.Bot, botToken);
+				await BotClient.StartAsync();
+
+				await Task.Delay(-1);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+			}
 		}
 
 		private static async Task OnRecievedMessage(SocketMessage message)
