@@ -226,12 +226,13 @@ namespace DiscordBotConsole.Minecraft
 					else if (isOnceConnected && !isConnect)
 					{
 						Console.WriteLine("Surveillance Break");
+						onCloseServerTask.Wait();
 						break;
 					}
 
 					Task.Delay(surveillanceInterval).Wait();
 				};
-			}).ContinueWith((_) => onCloseServerTask.Wait());
+			});
 		}
 
 		/// <summary>
