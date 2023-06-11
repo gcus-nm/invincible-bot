@@ -125,7 +125,7 @@ namespace DiscordBotConsole
 				FileName = "osascript",
 				Arguments = $"-e 'tell application \"Terminal\" to activate' -e 'tell application \"Terminal\" to do script \"{command}\"'",
 
-				UseShellExecute = false,
+				UseShellExecute = true,
 				CreateNoWindow = false,
 				Verb = "runas",
 				RedirectStandardOutput = true,
