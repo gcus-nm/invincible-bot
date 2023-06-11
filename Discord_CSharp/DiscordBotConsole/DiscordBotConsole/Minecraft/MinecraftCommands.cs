@@ -97,7 +97,7 @@ namespace DiscordBotConsole.Minecraft
 				await ReplyAsync("時間内にサーバーを起動できませんでした。");
 			}
 
-			var _ = ServerSurveillance(ReplyAsync("時間内にサーバーを起動できませんでした。"));
+			var _ = ServerSurveillance(ReplyAsync("サーバーが停止しました。"));
 		}
 
 		/// <summary>
@@ -220,18 +220,18 @@ namespace DiscordBotConsole.Minecraft
 					bool isConnect = IsConnetcionServer(ServerConnectionType.Client).Result;
 					if (isConnect)
 					{
+						Console.WriteLine("Surveillance Start");
 						isOnceConnected = true;
 					}
 					else if (isOnceConnected && !isConnect)
 					{
+						Console.WriteLine("Surveillance Break");
 						break;
 					}
 
 					Task.Delay(surveillanceInterval).Wait();
-				}
-
-				onCloseServerTask.Wait();
-			});			
+				};
+			}).ContinueWith((_) => onCloseServerTask.Wait());
 		}
 
 		/// <summary>
