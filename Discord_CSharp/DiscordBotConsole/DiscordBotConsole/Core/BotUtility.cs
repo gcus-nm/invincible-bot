@@ -106,5 +106,28 @@ namespace DiscordBotConsole
 
 			throw new TimeoutException();
 		}
+		
+		/// <summary>
+		/// 条件がTrueの間、待ち続ける
+		/// </summary>
+		/// <param name="status">whileループに利用する条件</param>
+		/// <param name="timeout">タイムアウト時間</param>
+		/// <param name="checkInterval">条件式の確認間隔</param>
+		/// <returns></returns>
+		public static async Task WaitWhile(Task<bool> status, int timeout = 30000, int checkInterval = 100)
+		{
+			int loopLimit = timeout / checkInterval;
+			for (int i = 0; i < loopLimit; ++i)
+			{
+				if (await status)
+				{
+					return;
+				}
+
+				await Task.Delay(100);
+			}
+
+			throw new TimeoutException();
+		}
 	}
 }
