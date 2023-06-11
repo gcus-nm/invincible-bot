@@ -64,7 +64,7 @@ tar -zcvf minecraft_${version}_${FolderDate}.tar.gz $minecraftDir
 # rsync -av --progress minecraft_${version}_${FolderDate}.tar.gz /Volumes/gcus_nm/minecraft_Backup/${version}/
 ########################################################
 
-echo
-read -p "Exit to press Enter."
+# echo
+# read -p "Exit to press Enter."
 cd
 

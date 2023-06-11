@@ -69,15 +69,18 @@ namespace DiscordBotConsole.Minecraft
 			var serverProcess = BotUtility.ShellStartForEnvironment(command);
 
 			bool isConnected = false;
-			for (int i = 0; i < 60; ++i)
+
+			serverProcess.OutputDataReceived += (proc, data) =>
 			{
-				var output = await serverProcess.StandardOutput.ReadToEndAsync();
-				if (output.Contains("Done"))
+				if (!string.IsNullOrEmpty(data.Data) &&
+					data.Data.Contains("Done"))
 				{
 					isConnected = true;
-					break;
 				}
+			};
 
+			for (int i = 0; i < 60 && isConnected == false; ++i)
+			{
 				await Task.Delay(1000);
 			}
 
@@ -90,6 +93,7 @@ namespace DiscordBotConsole.Minecraft
 				await ReplyAsync("時間内にサーバーを起動できませんでした。");
 			}
 
+			serverProcess.WaitForExit(-1);
 			await ServerSurveillance(ReplyAsync("サーバーが停止しました。"));
 		}
 
