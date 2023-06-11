@@ -11,6 +11,12 @@ using System.Threading.Tasks;
 
 namespace DiscordBotConsole.Minecraft
 {
+	public enum ServerConnectionType 
+	{
+		Client,
+		RCON,
+	}
+
 	/// <summary>
 	/// マイクラ関連のコマンド情報がまとまっている
 	/// </summary>
@@ -42,7 +48,7 @@ namespace DiscordBotConsole.Minecraft
 		{
 			await ReplyAsync("サーバーの起動状態を確認しています...");
 
-			if (await IsConnetcionServer())
+			if (await IsConnetcionServer(ServerConnectionType.Client))
 			{
 				await ReplyAsync("すでにサーバーが起動しているため、新たに起動できません。");
 				return;
@@ -71,7 +77,7 @@ namespace DiscordBotConsole.Minecraft
 			bool isConnected = false;
 			for (int i = 0; i < 60; ++i)
 			{
-				isConnected = await IsConnetcionServer();
+				isConnected = await IsConnetcionServer(ServerConnectionType.RCON);
 				if (isConnected)
 				{
 					break;
@@ -99,9 +105,15 @@ namespace DiscordBotConsole.Minecraft
 		[Command("stop")]
 		public async Task StopServer()
 		{
-			if (!await IsConnetcionServer())
+			if (!await IsConnetcionServer(ServerConnectionType.Client))
 			{
 				await ReplyAsync("サーバーは起動していません。");
+				return;
+			}
+
+			if (!await IsConnetcionServer(ServerConnectionType.RCON))
+			{
+				await ReplyAsync("サーバーにコマンドを送信できません。");
 				return;
 			}
 
@@ -110,7 +122,7 @@ namespace DiscordBotConsole.Minecraft
 		}
 		
 		/// <summary>
-		/// サーバーを停止する
+		/// サーバーの状態を表示する
 		/// </summary>
 		/// <returns></returns>
 		[Command("status")]
@@ -119,7 +131,7 @@ namespace DiscordBotConsole.Minecraft
 		{
 			string displayText = "サーバーは起動していません。";
 
-			if (await IsConnetcionServer())
+			if (await IsConnetcionServer(ServerConnectionType.Client))
 			{
 				displayText = "サーバーは起動しています。";
 			}
@@ -138,6 +150,18 @@ namespace DiscordBotConsole.Minecraft
 		[Alias("cmd")]
 		public async Task SendCommand(string command, params string[] args)
 		{
+			if (!await IsConnetcionServer(ServerConnectionType.Client))
+			{
+				await ReplyAsync("サーバーは起動していません。");
+				return;
+			}
+
+			if (!await IsConnetcionServer(ServerConnectionType.RCON))
+			{
+				await ReplyAsync("サーバーにコマンドを送信できません。");
+				return;
+			}
+
 			if (string.IsNullOrEmpty(command))
 			{
 				await ReplyAsync("コマンドを入力してください。");
@@ -189,7 +213,7 @@ namespace DiscordBotConsole.Minecraft
 			bool isOnceConnected = false;
 			while (true)
 			{
-				bool isConnect = await IsConnetcionServer();
+				bool isConnect = await IsConnetcionServer(ServerConnectionType.Client);
 				if (isConnect)
 				{
 					isOnceConnected = true;
@@ -239,7 +263,7 @@ namespace DiscordBotConsole.Minecraft
 		/// サーバーのTCPポートに接続できるかを確認する（サーバーが立っているか）
 		/// </summary>
 		/// <returns></returns>
-		private async Task<bool> IsConnetcionServer(int timeout = 1000)
+		private async Task<bool> IsConnetcionServer(ServerConnectionType connectType, int timeout = 1000)
 		{
 			try
 			{
@@ -250,7 +274,19 @@ namespace DiscordBotConsole.Minecraft
 					tcpClient.SendTimeout = 1000;
 					tcpClient.ReceiveTimeout = 1000;
 
-					var connectTask = tcpClient.ConnectAsync(SERVER_HOSTNAME, SERVER_PORT);
+					int port = 0;
+					switch (connectType) 
+					{
+						case ServerConnectionType.Client:
+							port = SERVER_PORT;
+							break;
+
+						case ServerConnectionType.RCON:
+							port = RCON_PORT;
+							break;
+					}
+
+					var connectTask = tcpClient.ConnectAsync(SERVER_HOSTNAME, port);
 
 					// サーバーへ接続開始
 					if (await Task.WhenAny(connectTask, Task.Delay(timeout)) != connectTask)
