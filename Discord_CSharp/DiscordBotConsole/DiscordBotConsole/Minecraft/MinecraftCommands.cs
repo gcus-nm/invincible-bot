@@ -213,16 +213,6 @@ namespace DiscordBotConsole.Minecraft
 			bool isOnceConnected = false;
 			while (true)
 			{
-				bool isConnect = await IsConnetcionServer(ServerConnectionType.Client);
-				if (isConnect)
-				{
-					isOnceConnected = true;
-				}
-				else if (isOnceConnected && !isConnect)
-				{
-					break;
-				}
-
 				await Task.Delay(surveillanceInterval);
 			}
 
