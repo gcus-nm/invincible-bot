@@ -19,6 +19,7 @@ namespace DiscordBotConsole.Minecraft
 	public class MinecraftCommands : ModuleBase
 	{
 		// サーバー設定
+		private const string SERVER_HOSTNAME = "gcus-MacPro.local";
 		private const string SERVER_IP_ADDRESS = "127.0.0.1";
 		private const int SERVER_PORT = 25024;
 		private const string RCON_PASSWORD = "2126";
@@ -183,7 +184,7 @@ namespace DiscordBotConsole.Minecraft
 					tcpClient.SendTimeout = 1000;
 					tcpClient.ReceiveTimeout = 1000;
 
-					var connectTask = tcpClient.ConnectAsync(SERVER_IP_ADDRESS, SERVER_PORT);
+					var connectTask = tcpClient.ConnectAsync(SERVER_HOSTNAME, SERVER_PORT);
 
 					// サーバーへ接続開始
 					if (await Task.WhenAny(connectTask, Task.Delay(timeout)) != connectTask)
