@@ -66,15 +66,14 @@ namespace DiscordBotConsole.Minecraft
 				new KeyValuePair<OSPlatform, string>(OSPlatform.OSX, $"bash /Users/user/minecraft/Git/MinecraftBuild.sh {serverVersion} {useRam} {info.JavaVersion}"),
 			});
 
-			var serverProcess = BotUtility.ShellStartForEnvironment(command);
+			BotUtility.ShellStartForEnvironment(command);
 
 			bool isConnected = false;
 			for (int i = 0; i < 60; ++i)
 			{
-				var output = await serverProcess.StandardOutput.ReadToEndAsync();
-				if (output.Contains("Done"))
+				isConnected = await IsConnetcionServer();
+				if (isConnected)
 				{
-					isConnected = true;
 					break;
 				}
 
