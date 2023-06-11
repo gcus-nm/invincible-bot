@@ -270,7 +270,7 @@ namespace DiscordBotConsole.Minecraft
 			}
 			catch (SocketException socket)
 			{
-				Console.WriteLine($"タイムアウト\n{socket}");
+				Console.WriteLine(socket.ToString());
 				return false;
 			}
 			catch (Exception ex)
