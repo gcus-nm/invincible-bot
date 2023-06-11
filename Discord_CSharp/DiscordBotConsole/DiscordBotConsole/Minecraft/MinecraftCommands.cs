@@ -90,7 +90,7 @@ namespace DiscordBotConsole.Minecraft
 					{
 						serverList.Append(", ");
 					}
-					serverList.Append($"{server.BuildServerTexts[i]}");
+					serverList.Append($"{server.BuildServerTexts[j]}");
 				}
 			}
 			serverList.AppendLine();
