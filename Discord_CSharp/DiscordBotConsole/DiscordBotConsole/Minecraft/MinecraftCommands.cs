@@ -67,6 +67,7 @@ namespace DiscordBotConsole.Minecraft
 			});
 
 			BotUtility.ShellStartForEnvironment(command);
+			ServerSurveillance(ReplyAsync("サーバーが停止しました。")).Start();
 
 			bool isConnected = false;
 			for (int i = 0; i < 60; ++i)
@@ -103,8 +104,27 @@ namespace DiscordBotConsole.Minecraft
 				return;
 			}
 
-			await SendCommand("stop");
+			await SendCommandInternal("stop");
 		}
+		
+		/// <summary>
+		/// サーバーを停止する
+		/// </summary>
+		/// <returns></returns>
+		[Command("status")]
+		[Alias("stat")]
+		public async Task DisplayServerStatus()
+		{
+			string displayText = "サーバーは起動していません。";
+
+			if (await IsConnetcionServer())
+			{
+				displayText = "サーバーは起動しています。";
+			}
+			
+			await ReplyAsync(displayText);
+		}
+
 
 		/// <summary>
 		/// rconでコマンド送信する
@@ -121,29 +141,12 @@ namespace DiscordBotConsole.Minecraft
 				await ReplyAsync("コマンドを入力してください。");
 			}
 
-			var serveraddress = IPAddress.Parse(SERVER_IP_ADDRESS);
+			string result = await SendCommandInternal(command, args);
+			string format = string.IsNullOrEmpty(result) ? "コマンド送信成功" : $"コマンド結果：{result}";
 
-			var connection = new RCON(serveraddress, RCON_PORT, RCON_PASSWORD);
-
-			StringBuilder commandBuilder = new StringBuilder(command);
-			for (int i = 0; i < args.Length; ++i)
-			{
-				commandBuilder.Append($" {args[i]}");
-			}
-
-			var connectTask = connection.SendCommandAsync(commandBuilder.ToString());
-
-			// サーバーへ接続開始
-			if (await Task.WhenAny(connectTask, Task.Delay(1000)) != connectTask)
-			{
-				await ReplyAsync("コマンドを送信できませんでした。");
-				return;
-			}
-
-			string result = await connectTask;
-			Console.WriteLine($"コマンド結果：{result}");
-			await ReplyAsync($"コマンド結果：{result}");
-		}
+			Console.WriteLine(format);
+			await ReplyAsync(format);
+		}		
 		
 		/// <summary>
 		/// 起動できるサーバーの一覧を表示する
@@ -172,6 +175,55 @@ namespace DiscordBotConsole.Minecraft
 			}
 
 			await ReplyAsync(serverList.ToString());
+		}
+
+		/// <summary>
+		/// サーバーの終了を監視する
+		/// </summary>
+		/// <param name="surveillanceInterval"></param>
+		/// <returns></returns>
+		private async Task ServerSurveillance(Task onCloseServerTask, int surveillanceInterval = 3000)
+		{
+			while (true)
+			{
+				if (await IsConnetcionServer())
+				{
+					break;
+				}
+				await Task.Delay(surveillanceInterval);
+			}
+
+			await onCloseServerTask;
+		}
+
+		/// <summary>
+		/// rconでコマンド送信する（内部処理用）
+		/// </summary>
+		/// <param name="command"></param>
+		/// <param name="args"></param>
+		/// <returns></returns>
+		private async Task<string> SendCommandInternal(string command, params string[] args)
+		{
+			var serveraddress = IPAddress.Parse(SERVER_IP_ADDRESS);
+
+			var connection = new RCON(serveraddress, RCON_PORT, RCON_PASSWORD);
+
+			StringBuilder commandBuilder = new StringBuilder(command);
+			for (int i = 0; i < args.Length; ++i)
+			{
+				commandBuilder.Append($" {args[i]}");
+			}
+
+			var connectTask = connection.SendCommandAsync(commandBuilder.ToString());
+
+			// サーバーへ接続開始
+			if (await Task.WhenAny(connectTask, Task.Delay(1000)) != connectTask)
+			{
+				await ReplyAsync("コマンドを送信できませんでした。");
+				return "コマンドを送信できませんでした。";
+			}
+
+			return await connectTask;
 		}
 
 		/// <summary>
