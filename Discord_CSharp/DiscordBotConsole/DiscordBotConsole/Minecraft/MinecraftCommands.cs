@@ -60,7 +60,6 @@ namespace DiscordBotConsole.Minecraft
 
 			string command = BotUtility.GetValueFromOS(new KeyValuePair<OSPlatform, string>[]
 			{
-				new KeyValuePair<OSPlatform, string>(OSPlatform.Windows, $"wsl bash D:/_Games/Minecraft/Git/minecraftServer-raspberrypi/MinecraftBuild.bat {serverVersion} {useRam} {info.JavaVersion}"),
 				new KeyValuePair<OSPlatform, string>(OSPlatform.OSX, $"bash /Users/user/minecraft/Git/MinecraftBuild.sh {serverVersion} {useRam} {info.JavaVersion}"),
 			});
 
@@ -112,7 +111,7 @@ namespace DiscordBotConsole.Minecraft
 		/// サーバーのTCPポートに接続できるかを確認する（サーバーが立っているか）
 		/// </summary>
 		/// <returns></returns>
-		private async Task<bool> IsConnetcionServer()
+		private async Task<bool> IsConnetcionServer(int timeout = 1000)
 		{
 			try
 			{
@@ -123,8 +122,13 @@ namespace DiscordBotConsole.Minecraft
 					tcpClient.SendTimeout = 1000;
 					tcpClient.ReceiveTimeout = 1000;
 
+					var connectTask = tcpClient.ConnectAsync(SERVER_ADDRESS, SERVER_PORT);
+
 					// サーバーへ接続開始
-					await tcpClient.ConnectAsync(SERVER_ADDRESS, SERVER_PORT);
+					if (await Task.WhenAny(connectTask, Task.Delay(timeout)) != connectTask)
+					{
+						throw new SocketException();
+					}
 
 					return true;
 				}
