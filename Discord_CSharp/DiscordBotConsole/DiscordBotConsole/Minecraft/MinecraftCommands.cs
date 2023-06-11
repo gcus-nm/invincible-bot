@@ -72,8 +72,6 @@ namespace DiscordBotConsole.Minecraft
 
 			serverProcess.OutputDataReceived += (proc, data) =>
 			{
-				Console.WriteLine(data.Data);
-
 				if (!string.IsNullOrEmpty(data.Data) &&
 					data.Data.Contains("Done"))
 				{
