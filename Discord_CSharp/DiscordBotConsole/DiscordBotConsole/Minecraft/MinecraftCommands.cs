@@ -97,7 +97,7 @@ namespace DiscordBotConsole.Minecraft
 				await ReplyAsync("時間内にサーバーを起動できませんでした。");
 			}
 
-			var _ = ServerSurveillance(ReplyAsync("サーバーが停止しました。"));
+			var _ = ServerSurveillance();
 		}
 
 		/// <summary>
@@ -210,7 +210,7 @@ namespace DiscordBotConsole.Minecraft
 		/// </summary>
 		/// <param name="surveillanceInterval"></param>
 		/// <returns></returns>
-		private Task ServerSurveillance(Task onCloseServerTask, int surveillanceInterval = 3000)
+		private Task ServerSurveillance( int surveillanceInterval = 3000)
 		{
 			return Task.Run(() =>
 			{
@@ -226,7 +226,7 @@ namespace DiscordBotConsole.Minecraft
 					else if (isOnceConnected && !isConnect)
 					{
 						Console.WriteLine("Surveillance Break");
-						onCloseServerTask.Wait();
+						ReplyAsync("サーバーが停止しました。").Wait();
 						break;
 					}
 
