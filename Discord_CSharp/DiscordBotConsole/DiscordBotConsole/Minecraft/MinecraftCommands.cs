@@ -104,6 +104,7 @@ namespace DiscordBotConsole.Minecraft
 				return;
 			}
 
+			await ReplyAsync("サーバーを停止します...");
 			await SendCommandInternal("stop");
 		}
 		
@@ -184,12 +185,19 @@ namespace DiscordBotConsole.Minecraft
 		/// <returns></returns>
 		private async Task ServerSurveillance(Task onCloseServerTask, int surveillanceInterval = 3000)
 		{
+			bool isOnceConnected = false;
 			while (true)
 			{
-				if (await IsConnetcionServer())
+				bool isConnect = await IsConnetcionServer();
+				if (isConnect)
+				{
+					isOnceConnected = true;
+				}
+				else if (isOnceConnected && !isConnect)
 				{
 					break;
 				}
+
 				await Task.Delay(surveillanceInterval);
 			}
 
