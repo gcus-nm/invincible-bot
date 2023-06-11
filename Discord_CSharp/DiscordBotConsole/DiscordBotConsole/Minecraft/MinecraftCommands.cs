@@ -67,7 +67,6 @@ namespace DiscordBotConsole.Minecraft
 			});
 
 			BotUtility.ShellStartForEnvironment(command);
-			ServerSurveillance(ReplyAsync("サーバーが停止しました。")).Start();
 
 			bool isConnected = false;
 			for (int i = 0; i < 60; ++i)
@@ -89,6 +88,8 @@ namespace DiscordBotConsole.Minecraft
 			{
 				await ReplyAsync("時間内にサーバーを起動できませんでした。");
 			}
+
+			await ServerSurveillance(ReplyAsync("サーバーが停止しました。"));
 		}
 
 		/// <summary>
