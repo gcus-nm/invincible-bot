@@ -50,6 +50,7 @@ namespace DiscordBotConsole.Core
 					throw new InvalidOperationException();
 				}
 
+				Console.WriteLine("Bot起動開始！");
 				await BotCommandService.AddModulesAsync(Assembly.GetEntryAssembly(), BotServices);
 				await BotClient.LoginAsync(TokenType.Bot, botToken);
 				await BotClient.StartAsync();

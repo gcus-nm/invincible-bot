@@ -1,7 +1,9 @@
 ﻿using Discord.Commands;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,9 +37,11 @@ namespace DiscordBotConsole.Minecraft
 		[Command("start")]
 		public async Task StartServer(string serverVersion = DEFAULT_VERSION, int useRam = DEFAULT_USE_RAM)
 		{
+			await ReplyAsync("サーバーの起動状態を確認しています...");
+
 			if (await IsConnetcionServer())
 			{
-				await ReplyAsync("すでにサーバーは起動しています。");
+				await ReplyAsync("すでにサーバーが起動しているため、新たに起動できません。");
 				return;
 			}
 
@@ -54,7 +58,13 @@ namespace DiscordBotConsole.Minecraft
 
 			await ReplyAsync($"{info.ServerFriendlyName} の起動を開始します...");
 
-			BotUtility.ShellStartForEnvironment($"bash /Users/user/minecraft/Git/build.sh {serverVersion} {useRam} {info.JavaVersion}");
+			string command = BotUtility.GetValueFromOS(new KeyValuePair<OSPlatform, string>[]
+			{
+				new KeyValuePair<OSPlatform, string>(OSPlatform.Windows, $"wsl bash D:/_Games/Minecraft/Git/minecraftServer-raspberrypi/MinecraftBuild.bat {serverVersion} {useRam} {info.JavaVersion}"),
+				new KeyValuePair<OSPlatform, string>(OSPlatform.OSX, $"bash /Users/user/minecraft/Git/MinecraftBuild.sh {serverVersion} {useRam} {info.JavaVersion}"),
+			});
+
+			BotUtility.ShellStartForEnvironment(command);
 
 			try
 			{
@@ -62,7 +72,7 @@ namespace DiscordBotConsole.Minecraft
 			}
 			catch (TimeoutException)
 			{
-				await ReplyAsync("サーバーを起動できませんでした。");
+				await ReplyAsync("時間内にサーバーを起動できませんでした。");
 				return;
 			}
 
@@ -113,19 +123,16 @@ namespace DiscordBotConsole.Minecraft
 					tcpClient.SendTimeout = 1000;
 					tcpClient.ReceiveTimeout = 1000;
 
-					try
-					{
-						// サーバーへ接続開始
-						await tcpClient.ConnectAsync(SERVER_ADDRESS, SERVER_PORT);
-					}
-					catch (ObjectDisposedException)
-					{
-						Console.WriteLine("接続失敗！");
-						return false;
-					}
+					// サーバーへ接続開始
+					await tcpClient.ConnectAsync(SERVER_ADDRESS, SERVER_PORT);
 
 					return true;
 				}
+			}
+			catch (SocketException socket)
+			{
+				Console.WriteLine(socket.ToString());
+				return false;
 			}
 			catch (Exception ex)
 			{

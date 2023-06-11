@@ -1,6 +1,9 @@
 ﻿using Discord.WebSocket;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace DiscordBotConsole
@@ -28,23 +31,70 @@ namespace DiscordBotConsole
 		}
 
 		/// <summary>
+		/// 実行環境を返す
+		/// </summary>
+		/// <returns></returns>
+		public static OSPlatform GetServerOS()
+		{
+			var servers = new OSPlatform[3]
+			{
+				OSPlatform.Windows,
+				OSPlatform.OSX,
+				OSPlatform.Linux
+			};
+
+			for (int i = 0; i < servers.Length; ++i)
+			{
+				if (RuntimeInformation.IsOSPlatform(servers[i]))
+				{
+					return servers[i];
+				}
+			}
+
+			throw new PlatformNotSupportedException();
+		}
+
+		/// <summary>
+		/// 実行環境と一致するバージョンのペアの値を返す
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="osValuePair"></param>
+		/// <returns></returns>
+		public static T GetValueFromOS<T>(KeyValuePair<OSPlatform, T>[] osValuePair)
+		{
+			var value = osValuePair.FirstOrDefault(pair => RuntimeInformation.IsOSPlatform(pair.Key));
+
+			return value.Equals(default(KeyValuePair<OSPlatform, T>)) ? default : value.Value;
+		}
+
+		/// <summary>
+		/// 実行環境と一致するバージョンのペアのActionを実行する
+		/// </summary>
+		/// <param name="osActionPair"></param>
+		public static void DoActionFromOS(KeyValuePair<OSPlatform, Action>[] osActionPair)
+		{
+			Action act = GetValueFromOS(osActionPair);
+			act?.Invoke();
+		}
+
+		/// <summary>
 		/// 環境によって自動的にShell実行を切り替える
 		/// </summary>
 		/// <param name="shellFilePath"></param>
 		/// <returns></returns>
 		public static Process ShellStartForEnvironment(string shellFilePath)
 		{
-			if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 			{
 				return ShellStartForWindows(shellFilePath);
 			}
-			else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX))
+			else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
 			{
 				return ShellStartForMac(shellFilePath);
 			}
 			else
 			{
-				throw new System.InvalidOperationException();
+				throw new InvalidOperationException();
 			}
 		}
 
