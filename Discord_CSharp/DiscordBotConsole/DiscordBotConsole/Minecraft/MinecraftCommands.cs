@@ -1,14 +1,12 @@
 ﻿using CoreRCON;
 using Discord.Commands;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace DiscordBotConsole.Minecraft
@@ -96,8 +94,6 @@ namespace DiscordBotConsole.Minecraft
 			{
 				await ReplyAsync("時間内にサーバーを起動できませんでした。");
 			}
-
-			await ServerSurveillance(ReplyAsync("サーバーが停止しました。")).ConfigureAwait(false);
 		}
 
 		/// <summary>
@@ -203,32 +199,6 @@ namespace DiscordBotConsole.Minecraft
 			}
 
 			await ReplyAsync(serverList.ToString());
-		}
-
-		/// <summary>
-		/// サーバーの終了を監視する
-		/// </summary>
-		/// <param name="surveillanceInterval"></param>
-		/// <returns></returns>
-		private async Task ServerSurveillance(Task onCloseServerTask, int surveillanceInterval = 3000)
-		{
-			bool isOnceConnected = false;
-			while (true)
-			{
-				bool isConnect = await IsConnetcionServer(ServerConnectionType.Client).ConfigureAwait(false);
-				if (isConnect)
-				{
-					isOnceConnected = true;
-				}
-				else if (isOnceConnected && !isConnect)
-				{
-					break;
-				}
-
-				await Task.Delay(surveillanceInterval).ConfigureAwait(false);
-			}
-
-			await onCloseServerTask;
 		}
 
 		/// <summary>
