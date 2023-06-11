@@ -82,7 +82,7 @@ namespace DiscordBotConsole.Minecraft
 			for (int i = 0; i < MinecraftServerData.MINECRAFT_SERVERS.Length; ++i)
 			{
 				var server = MinecraftServerData.MINECRAFT_SERVERS[i];
-				serverList.Append($"- サーバー名 ：{server.ServerFriendlyName}\t 起動名：");
+				serverList.Append($"- サーバー名 ：{server.ServerFriendlyName}\t\t 起動名：");
 
 				for (int j = 0; j < server.BuildServerTexts.Length; ++j)
 				{
@@ -90,7 +90,7 @@ namespace DiscordBotConsole.Minecraft
 					{
 						serverList.Append(", ");
 					}
-					serverList.Append($"{server.BuildServerTexts[j]}");
+					serverList.Append($"「{server.BuildServerTexts[j]}」");
 				}
 				serverList.AppendLine();
 			}
