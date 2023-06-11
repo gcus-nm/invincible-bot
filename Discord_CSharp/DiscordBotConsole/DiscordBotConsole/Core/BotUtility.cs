@@ -128,10 +128,11 @@ namespace DiscordBotConsole
 				UseShellExecute = true,
 				CreateNoWindow = false,
 				Verb = "runas",
-				RedirectStandardOutput = true,
-				RedirectStandardInput = true,
-				StandardOutputEncoding = Encoding.UTF8,
+				RedirectStandardOutput = false,
+				RedirectStandardInput = false,
 			};
+
+			shell.StandardOutputEncoding = Encoding.UTF8;
 
 			return Process.Start(shell);
 		}
