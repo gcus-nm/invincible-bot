@@ -164,7 +164,7 @@ namespace DiscordBotConsole
 		/// <param name="timeout">タイムアウト時間</param>
 		/// <param name="checkInterval">条件式の確認間隔</param>
 		/// <returns></returns>
-		public static async Task WaitWhile(Task<bool> status, int timeout = 30000, int checkInterval = 100)
+		public static async Task WaitWhile(Task<bool> status, int timeout = 60000, int checkInterval = 100)
 		{
 			int loopLimit = timeout / checkInterval;
 			for (int i = 0; i < loopLimit; ++i)
