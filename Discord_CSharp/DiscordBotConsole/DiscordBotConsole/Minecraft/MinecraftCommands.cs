@@ -19,7 +19,7 @@ namespace DiscordBotConsole.Minecraft
 	public class MinecraftCommands : ModuleBase
 	{
 		// サーバー設定
-		private const string SERVER_ADDRESS = "gcus-MacPro.local";
+		private const string SERVER_IP_ADDRESS = "127.0.0.1";
 		private const int SERVER_PORT = 25024;
 		private const string RCON_PASSWORD = "2126";
 		private const int RCON_PORT = 25025;
@@ -120,12 +120,21 @@ namespace DiscordBotConsole.Minecraft
 				await ReplyAsync("コマンドを入力してください。");
 			}
 
-			var serveraddress = IPAddress.Parse("127.0.0.1");
+			var serveraddress = IPAddress.Parse(SERVER_IP_ADDRESS);
 
 			var connection = new RCON(serveraddress, RCON_PORT, RCON_PASSWORD);
 
-			var result = await connection.SendCommandAsync(command);
+			var connectTask = connection.SendCommandAsync(command);
 
+			string result = null;
+
+			// サーバーへ接続開始
+			if (await Task.WhenAny(connectTask, Task.Delay(1000)) != connectTask)
+			{
+				await ReplyAsync("コマンドを送信できませんでした。");
+			}
+
+			result = await connectTask;
 			Console.WriteLine(result);
 			await ReplyAsync(result);
 		}
@@ -174,7 +183,7 @@ namespace DiscordBotConsole.Minecraft
 					tcpClient.SendTimeout = 1000;
 					tcpClient.ReceiveTimeout = 1000;
 
-					var connectTask = tcpClient.ConnectAsync(SERVER_ADDRESS, SERVER_PORT);
+					var connectTask = tcpClient.ConnectAsync(SERVER_IP_ADDRESS, SERVER_PORT);
 
 					// サーバーへ接続開始
 					if (await Task.WhenAny(connectTask, Task.Delay(timeout)) != connectTask)
